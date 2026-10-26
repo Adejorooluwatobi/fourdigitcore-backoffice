@@ -1,0 +1,181 @@
+<div class="max-w-4xl mx-auto space-y-6 fade-in">
+      
+      <!-- Page Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--info-box-bg); border: 1px solid var(--info-box-border); display: flex; align-items: center; justify-content: center; color: var(--accent2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em;">Account & Security Settings</h1>
+            <p style="font-size: 13px; color: var(--muted);">Manage administrative credentials, cryptographic key rotation, and session security.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Operator Identity Card -->
+      <div class="card card-pad" style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 58px; height: 58px; border-radius: 14px; background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #fff; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);">
+              {{ getInitials() }}
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                <h2 style="font-size: 18px; font-weight: 800; color: var(--text);">{{ authService.currentUser()?.fullName }}</h2>
+                <span style="font-size: 11px; font-weight: 700; color: var(--accent2); background: var(--info-box-bg); border: 1px solid var(--info-box-border); padding: 2px 10px; border-radius: 20px; text-transform: uppercase;">
+                  {{ authService.currentUser()?.roles?.[0] || 'SuperAdmin' }}
+                </span>
+              </div>
+              <p style="font-size: 13px; font-family: monospace; color: var(--muted);">{{ authService.currentUser()?.email }}</p>
+            </div>
+          </div>
+          <span style="font-size: 11.5px; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981;"></span>
+            Active Enclave Session
+          </span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; border-top: 1px solid var(--border); padding-top: 18px;">
+          <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); display: block; margin-bottom: 4px;">Account Authority</span>
+            <div style="font-size: 13px; font-weight: 700; color: var(--text);">
+              {{ authService.isSuperAdmin() ? 'Root SuperAdmin (Full Control)' : 'Standard Operator' }}
+            </div>
+          </div>
+
+          <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); display: block; margin-bottom: 4px;">Security Protocol</span>
+            <div style="font-size: 13px; font-family: monospace; font-weight: 700; color: #10b981;">
+              BCrypt + SHA-256 JWT
+            </div>
+          </div>
+
+          <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); display: block; margin-bottom: 4px;">Session Expiry</span>
+            <div style="font-size: 13px; font-family: monospace; font-weight: 700; color: var(--accent2);">
+              7 Days (Rolling Refresh)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change Password Card -->
+      <div class="card card-pad">
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 17px; font-weight: 800; color: var(--text);">Change Administrator Password</h3>
+          <p style="font-size: 13px; color: var(--muted); margin-top: 2px;">
+            Update your administrative password. Requires current credential verification and strict entropy complexity.
+          </p>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" style="max-width: 540px; display: flex; flex-direction: column; gap: 18px;">
+          <!-- Current Password -->
+          <div>
+            <label class="form-label">Current Password</label>
+            <input 
+              type="password" 
+              formControlName="currentPassword" 
+              placeholder="••••••••••••"
+              class="form-control"
+            />
+          </div>
+
+          <!-- New Password -->
+          <div>
+            <label class="form-label">New Password</label>
+            <input 
+              type="password" 
+              formControlName="newPassword" 
+              placeholder="••••••••••••"
+              class="form-control"
+            />
+
+            <!-- Real-time Complexity Checklist -->
+            <div style="margin-top: 14px; padding: 14px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px;">
+              
+              <div style="display: flex; align-items: center; gap: 8px; transition: color 0.15s;" [style.color]="hasLength() ? '#34d399' : 'var(--muted)'">
+                <span [style.background]="hasLength() ? 'rgba(16, 185, 129, 0.18)' : 'var(--surface)'"
+                      [style.border]="hasLength() ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid var(--border)'"
+                      style="width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold;">
+                  {{ hasLength() ? '✓' : '•' }}
+                </span>
+                <span style="font-weight: 600;">8+ Characters</span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 8px; transition: color 0.15s;" [style.color]="hasUpper() ? '#34d399' : 'var(--muted)'">
+                <span [style.background]="hasUpper() ? 'rgba(16, 185, 129, 0.18)' : 'var(--surface)'"
+                      [style.border]="hasUpper() ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid var(--border)'"
+                      style="width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold;">
+                  {{ hasUpper() ? '✓' : '•' }}
+                </span>
+                <span style="font-weight: 600;">1 Uppercase (A-Z)</span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 8px; transition: color 0.15s;" [style.color]="hasLower() ? '#34d399' : 'var(--muted)'">
+                <span [style.background]="hasLower() ? 'rgba(16, 185, 129, 0.18)' : 'var(--surface)'"
+                      [style.border]="hasLower() ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid var(--border)'"
+                      style="width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold;">
+                  {{ hasLower() ? '✓' : '•' }}
+                </span>
+                <span style="font-weight: 600;">1 Lowercase (a-z)</span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 8px; transition: color 0.15s;" [style.color]="hasDigit() ? '#34d399' : 'var(--muted)'">
+                <span [style.background]="hasDigit() ? 'rgba(16, 185, 129, 0.18)' : 'var(--surface)'"
+                      [style.border]="hasDigit() ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid var(--border)'"
+                      style="width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold;">
+                  {{ hasDigit() ? '✓' : '•' }}
+                </span>
+                <span style="font-weight: 600;">1 Number (0-9)</span>
+              </div>
+
+              <div style="grid-column: span 2; display: flex; align-items: center; gap: 8px; transition: color 0.15s;" [style.color]="hasSymbol() ? '#34d399' : 'var(--muted)'">
+                <span [style.background]="hasSymbol() ? 'rgba(16, 185, 129, 0.18)' : 'var(--surface)'"
+                      [style.border]="hasSymbol() ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid var(--border)'"
+                      style="width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold;">
+                  {{ hasSymbol() ? '✓' : '•' }}
+                </span>
+                <span style="font-weight: 600;">1 Special Symbol (!@#$%^&*)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Confirm New Password -->
+          <div>
+            <label class="form-label">Confirm New Password</label>
+            <input 
+              type="password" 
+              formControlName="confirmNewPassword" 
+              placeholder="••••••••••••"
+              class="form-control"
+            />
+            @if (passwordForm.get('confirmNewPassword')?.value && !passwordsMatch()) {
+              <span style="font-size: 12px; color: #f87171; margin-top: 6px; display: block; font-weight: 600;">Passwords do not match.</span>
+            }
+          </div>
+
+          <!-- Submit Button -->
+          <div style="padding-top: 6px;">
+            <button 
+              type="submit" 
+              [disabled]="isSubmitting() || !isFormValid()"
+              class="btn-primary"
+              style="padding: 10px 24px; font-size: 13.5px;">
+              @if (!isSubmitting()) {
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span>Update Credentials</span>
+              } @else {
+                <span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                <span>Updating Credentials...</span>
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>

@@ -1,0 +1,438 @@
+<div class="space-y-6 fade-in">
+      
+      <!-- Page Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--info-box-bg); border: 1px solid var(--info-box-border); display: flex; align-items: center; justify-content: center; color: var(--accent2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <div>
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em;">Site Branding & Navigation CMS</h1>
+            <p style="font-size: 13px; color: var(--muted);">Direct control plane for global brand assets, header navigation routing, and footer link hierarchies.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button (click)="loadAllData()" class="btn-secondary" style="font-size: 12.5px; padding: 8px 14px;" [disabled]="isLoading()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.animate-spin]="isLoading()">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Sync Branding</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Segmented Control Tab Navigation -->
+      <div style="display: flex; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 2px;">
+        <button 
+          (click)="activeTab.set('branding')" 
+          [class.active-tab]="activeTab() === 'branding'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>
+          <span>Global Identity & Branding</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('navigation')" 
+          [class.active-tab]="activeTab() === 'navigation'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <span>Header Navbar ({{ navItems().length }})</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('footer')" 
+          [class.active-tab]="activeTab() === 'footer'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span>Footer Columns ({{ footerColumns().length }})</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('tickers')" 
+          [class.active-tab]="activeTab() === 'tickers'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>Status Tickers</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('seo')" 
+          [class.active-tab]="activeTab() === 'seo'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>SEO &amp; Page Meta ({{ platformPages.length }})</span>
+        </button>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 1: GLOBAL BRANDING & IDENTITY                                        -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'branding'" class="card card-pad space-y-4">
+        <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+            <span>Core Brand Identity & SEO Open Graph</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Global Site Title</label>
+              <input type="text" formControlName="siteTitle" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Brand Monogram</label>
+              <input type="text" formControlName="monogram" placeholder="6174" class="form-control font-mono" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">Meta Description (SEO)</label>
+              <textarea rows="3" formControlName="metaDescription" class="form-control form-textarea"></textarea>
+            </div>
+            <!-- Brand Identity Media Assets (Cloudinary CDN Direct PC Upload) -->
+            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl border border-border bg-surface">
+              <app-image-uploader 
+                [imageUrl]="settingsForm.get('logoLightUrl')?.value" 
+                (imageUrlChange)="settingsForm.patchValue({logoLightUrl: $event})"
+                label="Logo (Light Mode)"
+                folder="fourdigitcore/branding"
+                previewShape="banner">
+              </app-image-uploader>
+
+              <app-image-uploader 
+                [imageUrl]="settingsForm.get('logoDarkUrl')?.value" 
+                (imageUrlChange)="settingsForm.patchValue({logoDarkUrl: $event})"
+                label="Logo (Dark Mode)"
+                folder="fourdigitcore/branding"
+                previewShape="banner">
+              </app-image-uploader>
+
+              <app-image-uploader 
+                [imageUrl]="settingsForm.get('faviconUrl')?.value" 
+                (imageUrlChange)="settingsForm.patchValue({faviconUrl: $event})"
+                label="Favicon Asset"
+                folder="fourdigitcore/branding"
+                previewShape="circle">
+              </app-image-uploader>
+            </div>
+            <div>
+              <label class="form-label">Default Color Theme</label>
+              <select formControlName="defaultTheme" class="form-select">
+                <option value="light">Light Mode (Clean Technical Canvas)</option>
+                <option value="dark">Dark Mode (Executive Slate-Navy)</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">Copyright Notice</label>
+              <input type="text" formControlName="copyrightText" placeholder="© 2026 FourDigitCore Inc. All rights reserved." class="form-control" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">Footer Mission Tagline</label>
+              <textarea rows="2" formControlName="footerTagline" class="form-control form-textarea"></textarea>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" [disabled]="isSaving()" class="btn-primary">Save Brand Identity</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 2: HEADER NAVBAR MANAGER                                             -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'navigation'" class="space-y-4">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <p style="font-size: 13px; color: var(--muted);">Navigation menu links rendered in the primary sticky header bar of the public website.</p>
+          <button (click)="openNavDrawer()" class="btn-primary" style="font-size: 12.5px; padding: 8px 14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Navigation Item</span>
+          </button>
+        </div>
+
+        <div class="card card-pad overflow-x-auto">
+          <table class="w-full text-left" style="font-size: 13px;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border); color: var(--muted); font-size: 11px; text-transform: uppercase;">
+                <th style="padding: 10px 14px;">Order</th>
+                <th style="padding: 10px 14px;">Label</th>
+                <th style="padding: 10px 14px;">Target URL / Route</th>
+                <th style="padding: 10px 14px;">Data Page Identifier</th>
+                <th style="padding: 10px 14px;">Status</th>
+                <th style="padding: 10px 14px; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let n of navItems()" style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px 14px; font-mono; font-weight: 700; color: var(--muted);">{{ n.sortOrder }}</td>
+                <td style="padding: 12px 14px; font-weight: 700; color: var(--text);">{{ n.label }}</td>
+                <td style="padding: 12px 14px; font-family: monospace; color: var(--accent2);">{{ n.url }}</td>
+                <td style="padding: 12px 14px; font-family: monospace; color: var(--muted);">{{ n.dataPage }}</td>
+                <td style="padding: 12px 14px;">
+                  <span class="tag-pill" style="font-size: 11px;">{{ n.isActive ? 'Active' : 'Hidden' }}</span>
+                </td>
+                <td style="padding: 12px 14px; text-align: right;">
+                  <button (click)="openNavDrawer(n)" class="btn-secondary" style="font-size: 11px; padding: 4px 10px; margin-right: 6px;">Edit</button>
+                  <button (click)="deleteNavItem(n.id)" class="btn-action-delete" title="Delete">✕</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 3: FOOTER LAYOUT COLUMNS                                             -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'footer'" class="space-y-4">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <p style="font-size: 13px; color: var(--muted);">Multi-column navigation link hierarchies displayed in the public page footer.</p>
+          <button (click)="openFooterDrawer()" class="btn-primary" style="font-size: 12.5px; padding: 8px 14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Footer Column</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div *ngFor="let col of footerColumns()" class="card card-pad flex flex-col justify-between" style="gap: 14px;">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <h3 style="font-size: 15px; font-weight: 800; color: var(--text);">{{ col.title }}</h3>
+                <span style="font-size: 11px; font-mono; color: var(--muted);">Column #{{ col.sortOrder }}</span>
+              </div>
+
+              <!-- Links List -->
+              <div class="space-y-2">
+                <div *ngFor="let l of col.links" style="display: flex; align-items: center; justify-content: space-between; font-size: 12.5px;">
+                  <span style="color: var(--text2);">{{ l.label }}</span>
+                  <span style="font-family: monospace; font-size: 11px; color: var(--accent2);">{{ l.url }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px;">
+              <button (click)="openFooterDrawer(col)" class="btn-secondary" style="font-size: 11px; padding: 4px 10px;">Edit Column</button>
+              <button (click)="deleteFooterColumn(col.id)" class="btn-action-delete" title="Delete">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 4: STATUS TICKERS                                                    -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'tickers'" class="card card-pad space-y-4">
+        <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Real-time Header Ticker Strings & Attractor Status Badges</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Kernel Security Badge</label>
+              <input type="text" formControlName="kernelStatusBadge" placeholder="KERNEL//SEC_LEVEL_0" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Latency Ticker String</label>
+              <input type="text" formControlName="latencyTickerText" placeholder="LATENCY: 0.14ms" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Active Cluster Text</label>
+              <input type="text" formControlName="activeClusterText" placeholder="GLOBAL CLUSTER ACTIVE" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Invariance Equilibrium Banner</label>
+              <input type="text" formControlName="invarianceObservedText" placeholder="6174 INVARIANCE OBSERVED" class="form-control font-mono" />
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" [disabled]="isSaving()" class="btn-primary">Update Ticker Strings</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 5: SEO & PAGE METADATA MANAGER                                        -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'seo'" class="space-y-6">
+        
+        <!-- Page Selector Bar -->
+        <div class="card card-pad space-y-3">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h3 style="font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; margin: 0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent2);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Select Public Page to Configure</span>
+              </h3>
+              <p style="font-size: 12px; color: var(--muted); margin: 3px 0 0 0;">Manage search engine optimization (SERP), OpenGraph tags, and optional hero overrides per page.</p>
+            </div>
+            <span style="font-size: 11.5px; font-family: monospace; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--accent2);">
+              7 Public Pages
+            </span>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px;">
+            <button 
+              type="button" 
+              *ngFor="let page of platformPages" 
+              (click)="selectPage(page.key)"
+              [class.active-page-pill]="selectedPageKey() === page.key"
+              class="seo-page-pill">
+              <span>{{ page.name }}</span>
+              <span style="font-size: 10.5px; opacity: 0.7; font-family: monospace;">({{ page.key }})</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Google SERP Live Search Preview -->
+        <div class="card card-pad space-y-3">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 11.5px; font-family: monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent2); display: flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Live Google Search Snippet Preview</span>
+            </div>
+            <span style="font-size: 11px; color: var(--muted);">Real-time search engine result simulator</span>
+          </div>
+
+          <!-- Realistic Google Search Result Card -->
+          <div style="padding: 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface2); max-width: 650px;" class="space-y-2">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted);">
+              <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(56, 189, 248, 0.2); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #38bdf8;">4</div>
+              <span style="color: var(--text);">https://fourdigitcore.ai</span>
+              <span style="opacity: 0.5;">&gt;</span>
+              <span style="font-family: monospace; color: var(--accent2);">{{ selectedPageKey() === 'index' ? '' : selectedPageKey() }}</span>
+            </div>
+            <div style="font-size: 17px; font-weight: 500; color: #38bdf8; line-height: 1.3; cursor: pointer; text-decoration: underline;">
+              {{ seoForm.get('seoTitle')?.value || 'Page Title Not Set' }}
+            </div>
+            <p style="font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: 0;">
+              {{ seoForm.get('seoDescription')?.value || 'Add a meta description to preview how your page will appear in search results.' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- SEO Configuration Form -->
+        <form [formGroup]="seoForm" (ngSubmit)="savePageSeo()" class="card card-pad space-y-4">
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Page Metadata &amp; Content Settings ({{ selectedPageKey() }})</span>
+            </div>
+            <div style="font-size: 12px; font-family: monospace; color: var(--muted);">
+              Target Route: <span style="color: var(--accent2);">fourdigitcore.ai/{{ selectedPageKey() === 'index' ? '' : selectedPageKey() + '.html' }}</span>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <!-- SEO Meta Title -->
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                <label class="form-label mb-0">SEO Meta Title <span class="text-rose-500">*</span></label>
+                <span style="font-size: 11px; font-family: monospace;" [ngClass]="(seoForm.get('seoTitle')?.value?.length || 0) > 60 ? 'text-amber-400 font-bold' : 'text-muted'">
+                  {{ seoForm.get('seoTitle')?.value?.length || 0 }} / 60 recommended (max 120)
+                </span>
+              </div>
+              <input 
+                type="text" 
+                formControlName="seoTitle" 
+                placeholder="e.g. FourDigitCore 6174 // Autonomous Compute & Zero-Trust Systems" 
+                class="form-control" />
+              <p style="font-size: 11px; color: var(--muted); margin-top: 4px;">Displayed in browser tabs and as the primary clickable headline in search engine result pages.</p>
+            </div>
+
+            <!-- SEO Meta Description -->
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                <label class="form-label mb-0">SEO Meta Description <span class="text-rose-500">*</span></label>
+                <span style="font-size: 11px; font-family: monospace;" [ngClass]="(seoForm.get('seoDescription')?.value?.length || 0) > 160 ? 'text-amber-400 font-bold' : 'text-muted'">
+                  {{ seoForm.get('seoDescription')?.value?.length || 0 }} / 160 recommended (max 320)
+                </span>
+              </div>
+              <textarea 
+                rows="3" 
+                formControlName="seoDescription" 
+                placeholder="e.g. Direct-to-metal agentic execution graphs with zero-trust enclave protection..." 
+                class="form-control text-xs leading-relaxed"></textarea>
+              <p style="font-size: 11px; color: var(--muted); margin-top: 4px;">Concise summary indexed by Google/Bing and populated in OpenGraph &amp; social cards.</p>
+            </div>
+
+            <!-- Hero Section Overrides -->
+            <div style="padding: 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface2);" class="space-y-3">
+              <div style="font-size: 11.5px; font-family: monospace; font-weight: 700; text-transform: uppercase; color: var(--accent2); display: flex; align-items: center; gap: 6px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                <span>Optional Page Hero Header Overrides</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label class="form-label text-[11px]">Hero Badge Pill</label>
+                  <input type="text" formControlName="heroBadgeText" placeholder="e.g. 01 // ARCHITECTURE" class="form-control text-xs font-mono" />
+                </div>
+                <div>
+                  <label class="form-label text-[11px]">Hero Heading</label>
+                  <input type="text" formControlName="heroHeading" placeholder="e.g. Autonomous Compute" class="form-control text-xs" />
+                </div>
+                <div>
+                  <label class="form-label text-[11px]">Hero Subtitle</label>
+                  <input type="text" formControlName="heroSubtitle" placeholder="e.g. Microsecond latency ceilings" class="form-control text-xs" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 8px;">
+            <span style="font-size: 11.5px; color: var(--muted);">Direct database persistence into PageSettings table.</span>
+            <button type="submit" [disabled]="seoForm.invalid || isSaving()" class="btn-primary">
+              {{ isSaving() ? 'Saving...' : 'Save SEO Configuration' }}
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+      <!-- Nav Drawer -->
+      <div *ngIf="isNavDrawerOpen" class="drawer-backdrop" (click)="isNavDrawerOpen = false">
+        <div class="drawer-panel" style="max-width: 500px;" (click)="$event.stopPropagation()">
+          <div class="drawer-header">
+            <div>
+              <h2 class="drawer-title">{{ editingNavId ? 'Edit Nav Item' : 'Create Nav Item' }}</h2>
+              <p class="drawer-sub">Configure label, page slug, and header display priority</p>
+            </div>
+            <button (click)="isNavDrawerOpen = false" class="drawer-close-btn">✕</button>
+          </div>
+
+          <form [formGroup]="navForm" (ngSubmit)="saveNavItem()" class="drawer-body">
+            <div class="form-section-card">
+              <div>
+                <label class="form-label">Menu Item Label</label>
+                <input type="text" formControlName="label" placeholder="e.g. Solutions" class="form-control" />
+              </div>
+              <div>
+                <label class="form-label">Target Route URL</label>
+                <input type="text" formControlName="url" placeholder="e.g. solutions.html" class="form-control font-mono" />
+              </div>
+              <div>
+                <label class="form-label">Data Page Identifier</label>
+                <input type="text" formControlName="dataPage" placeholder="e.g. solutions" class="form-control font-mono" />
+              </div>
+              <div>
+                <label class="form-label">Sort Order</label>
+                <input type="number" formControlName="sortOrder" placeholder="1" class="form-control font-mono" />
+              </div>
+            </div>
+
+            <div class="drawer-footer" style="padding: 16px 0 0 0; margin-top: 8px;">
+              <button type="button" (click)="isNavDrawerOpen = false" class="btn-secondary">Cancel</button>
+              <button type="submit" [disabled]="navForm.invalid || isSaving()" class="btn-primary">
+                {{ editingNavId ? 'Update Item' : 'Add Item' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>

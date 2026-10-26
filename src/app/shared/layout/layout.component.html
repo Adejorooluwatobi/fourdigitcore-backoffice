@@ -1,0 +1,18 @@
+<div id="page-app">
+  <!-- Fixed Sidebar Navigation -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Responsive Main Content Wrapper -->
+  <div id="main">
+    <!-- Sticky Header Bar -->
+    <app-header></app-header>
+
+    <!-- Dynamic Page View Container -->
+    <main id="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <!-- Reactive Floating Toast Notifications -->
+  <app-toast></app-toast>
+</div>

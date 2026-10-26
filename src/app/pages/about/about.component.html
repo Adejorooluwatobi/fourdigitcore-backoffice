@@ -1,0 +1,281 @@
+<div class="space-y-6 fade-in">
+      
+      <!-- Page Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--info-box-bg); border: 1px solid var(--info-box-border); display: flex; align-items: center; justify-content: center; color: var(--accent2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div>
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em;">About & Leadership CMS</h1>
+            <p style="font-size: 13px; color: var(--muted);">Direct control plane for corporate narrative, Kaprekar mathematical story, and fellowship credentials.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button (click)="loadAllData()" class="btn-secondary" style="font-size: 12.5px; padding: 8px 14px;" [disabled]="isLoading()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.animate-spin]="isLoading()">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Sync Content</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Segmented Control Tab Navigation -->
+      <div style="display: flex; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 2px;">
+        <button 
+          (click)="activeTab.set('narrative')" 
+          [class.active-tab]="activeTab() === 'narrative'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span>Foundational Story & Hero</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('architect')" 
+          [class.active-tab]="activeTab() === 'architect'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+          <span>Principal Architect Dossier</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('team')" 
+          [class.active-tab]="activeTab() === 'team'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Engineering Fellows ({{ teamMembers().length }})</span>
+        </button>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 1: FOUNDATIONAL STORY & HERO                                         -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'narrative'" class="space-y-6">
+        <!-- Hero Section -->
+        <form [formGroup]="heroForm" (ngSubmit)="saveHero()" class="card card-pad space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+            <span>About Page Header & HUD Indicators</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Badge Label</label>
+              <input type="text" formControlName="badgeText" placeholder="01 // ABOUT FOURDIGITCORE" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">HUD Status Pill</label>
+              <input type="text" formControlName="heroHudPill" placeholder="● FOUNDATION // MATHEMATICAL PROOFS" class="form-control font-mono" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">Headline</label>
+              <input type="text" formControlName="headline" class="form-control" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">Subheadline Narrative</label>
+              <textarea rows="3" formControlName="subheadline" class="form-control form-textarea"></textarea>
+            </div>
+            <div>
+              <label class="form-label">Equilibrium Invariant Text</label>
+              <input type="text" formControlName="equilibriumText" placeholder="6174 INVARIANT" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Cluster State Text</label>
+              <input type="text" formControlName="clusterStateText" placeholder="STABLE" class="form-control font-mono" />
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" [disabled]="isSaving()" class="btn-primary">Save Hero Indicators</button>
+          </div>
+        </form>
+
+        <!-- Story Section -->
+        <form [formGroup]="storyForm" (ngSubmit)="saveStory()" class="card card-pad space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            <span>The 6174 Invariance Mathematical Story</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Story Badge Label</label>
+              <input type="text" formControlName="badgeText" placeholder="THE INVARIANCE STORY" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Story Title</label>
+              <input type="text" formControlName="title" placeholder="Why 6174?" class="form-control" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">First Narrative Paragraph (Mathematical Foundation)</label>
+              <textarea rows="3" formControlName="paragraph1" class="form-control form-textarea"></textarea>
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">Second Narrative Paragraph (Kernel Architecture Implication)</label>
+              <textarea rows="3" formControlName="paragraph2" class="form-control form-textarea"></textarea>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" [disabled]="isSaving()" class="btn-primary">Save Story Narrative</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 2: PRINCIPAL ARCHITECT DOSSIER                                       -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'architect'" class="card card-pad space-y-4">
+        <form [formGroup]="architectForm" (ngSubmit)="saveArchitect()" class="space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+            <span>Principal Systems Fellow & Founder Dossier</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Cloudinary PC Image Uploader for Principal Architect -->
+            <div class="md:col-span-3 p-4 rounded-xl border border-border bg-surface">
+              <app-image-uploader 
+                [imageUrl]="architectForm.get('avatarUrl')?.value" 
+                (imageUrlChange)="architectForm.patchValue({avatarUrl: $event})"
+                label="Principal Architect Portrait Photo (Cloudinary CDN)"
+                folder="fourdigitcore/architect"
+                previewShape="circle">
+              </app-image-uploader>
+            </div>
+
+            <div>
+              <label class="form-label">Initials</label>
+              <input type="text" formControlName="initials" placeholder="VT" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Full Name</label>
+              <input type="text" formControlName="fullName" placeholder="Dr. Vance K. Thorne" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Role Title</label>
+              <input type="text" formControlName="roleTitle" placeholder="Founder & Principal Systems Fellow" class="form-control" />
+            </div>
+            <div class="md:col-span-3">
+              <label class="form-label">PGP Key Fingerprint</label>
+              <input type="text" formControlName="pgpKey" placeholder="PGP: 6174:BF90" class="form-control font-mono" />
+            </div>
+            <div class="md:col-span-3">
+              <label class="form-label">Philosophical Pull Quote</label>
+              <textarea rows="3" formControlName="quote" class="form-control form-textarea"></textarea>
+            </div>
+            <div>
+              <label class="form-label">Commits Counter Text</label>
+              <input type="text" formControlName="commitsCountText" placeholder="14,892 Commits" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Patents Counter Text</label>
+              <input type="text" formControlName="patentsCountText" placeholder="12 Patents" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Releases Counter Text</label>
+              <input type="text" formControlName="releasesCountText" placeholder="4 OS Releases" class="form-control font-mono" />
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" [disabled]="isSaving()" class="btn-primary">Save Architect Profile</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 3: ENGINEERING FELLOWS                                               -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'team'" class="space-y-4">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <p style="font-size: 13px; color: var(--muted);">Fellowship of low-level kernel architects, tensor streaming researchers, and cryptographers.</p>
+          <button (click)="openTeamDrawer()" class="btn-primary" style="font-size: 12.5px; padding: 8px 14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Fellow</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div *ngFor="let m of teamMembers()" class="card card-pad flex flex-col justify-between" style="gap: 12px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--accent2); flex-shrink: 0;">
+                  <img *ngIf="m.avatarUrl" [src]="mediaService.resolveUrl(m.avatarUrl)" [alt]="m.fullName" class="w-full h-full object-cover" (error)="$event.target.style.display='none'" />
+                  <span *ngIf="!m.avatarUrl">{{ m.fullName ? m.fullName.substring(0, 2).toUpperCase() : 'FE' }}</span>
+                </div>
+                <div style="min-width: 0; flex: 1;">
+                  <h4 style="font-size: 15px; font-weight: 800; color: var(--text); truncate;">{{ m.fullName }}</h4>
+                  <p style="font-size: 12px; color: var(--muted); truncate;">{{ m.roleTitle }}</p>
+                </div>
+              </div>
+              <p style="font-size: 12.5px; color: var(--text2); line-height: 1.5; margin-bottom: 8px;">{{ m.bio }}</p>
+              <div *ngIf="m.pgpFingerprint" style="font-size: 11px; font-family: monospace; color: var(--accent2);">{{ m.pgpFingerprint }}</div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px;">
+              <button (click)="openTeamDrawer(m)" class="btn-secondary" style="font-size: 11px; padding: 4px 10px;">Edit</button>
+              <button (click)="deleteTeamMember(m.id)" class="btn-action-delete" title="Delete">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide-over Drawer for Team Member -->
+      <div *ngIf="isTeamDrawerOpen" class="drawer-backdrop" (click)="isTeamDrawerOpen = false">
+        <div class="drawer-panel" style="max-width: 520px;" (click)="$event.stopPropagation()">
+          <div class="drawer-header">
+            <div>
+              <h2 class="drawer-title">{{ editingMemberId ? 'Edit Engineering Fellow' : 'Add Engineering Fellow' }}</h2>
+              <p class="drawer-sub">Configure role title, biographical overview, and cryptographic identity</p>
+            </div>
+            <button (click)="isTeamDrawerOpen = false" class="drawer-close-btn">✕</button>
+          </div>
+
+          <form [formGroup]="teamForm" (ngSubmit)="saveTeamMember()" class="drawer-body">
+            <div class="form-section-card space-y-3">
+              <!-- Fellow Avatar Cloudinary Uploader -->
+              <app-image-uploader 
+                [imageUrl]="teamForm.get('avatarUrl')?.value" 
+                (imageUrlChange)="teamForm.patchValue({avatarUrl: $event})"
+                label="Fellow Portrait Avatar (Cloudinary CDN)"
+                folder="fourdigitcore/team"
+                previewShape="circle">
+              </app-image-uploader>
+
+              <div>
+                <label class="form-label">Full Name</label>
+                <input type="text" formControlName="fullName" placeholder="e.g. Dr. Helena Rostova" class="form-control" />
+              </div>
+              <div>
+                <label class="form-label">Role Title</label>
+                <input type="text" formControlName="roleTitle" placeholder="e.g. Fellow // Photonic Interconnects" class="form-control" />
+              </div>
+              <div>
+                <label class="form-label">PGP Fingerprint</label>
+                <input type="text" formControlName="pgpFingerprint" placeholder="PGP: 6174:99A1" class="form-control font-mono" />
+              </div>
+              <div>
+                <label class="form-label">Biographical Background</label>
+                <textarea rows="4" formControlName="bio" placeholder="Former systems researcher at..." class="form-control form-textarea"></textarea>
+              </div>
+            </div>
+
+            <div class="drawer-footer" style="padding: 16px 0 0 0; margin-top: 8px;">
+              <button type="button" (click)="isTeamDrawerOpen = false" class="btn-secondary">Cancel</button>
+              <button type="submit" [disabled]="teamForm.invalid || isSaving()" class="btn-primary">
+                {{ editingMemberId ? 'Update Fellow' : 'Save Fellow' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>

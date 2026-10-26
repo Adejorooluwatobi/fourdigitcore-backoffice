@@ -1,0 +1,301 @@
+<div class="space-y-6 fade-in">
+  
+  <!-- 4 Top Metrics Cards (Matching Approved Mockup: admin_dashboard_ui_1792688412129.jpg) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    
+    <!-- Card 1: Active Operators -->
+    <div class="stat-metric-card cursor-default group" style="border-bottom-color: #38bdf8;">
+      <div class="flex items-start justify-between">
+        <div class="text-3xl font-extrabold tracking-tight" style="color: var(--text);">
+          {{ stats()[0].value }}
+        </div>
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-300 group-hover:scale-105"
+          style="background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.25); color: #38bdf8;">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mt-2">
+        <span class="text-xs font-semibold tracking-wide" style="color: var(--muted);">
+          {{ stats()[0].title }}
+        </span>
+        <span class="text-[11px] font-mono text-sky-400">
+          {{ stats()[0].change }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Card 2: Enterprise Inquiries -->
+    <div class="stat-metric-card cursor-default group" style="border-bottom-color: #00f2fe;">
+      <div class="flex items-start justify-between">
+        <div class="text-3xl font-extrabold tracking-tight" style="color: var(--text);">
+          {{ stats()[1].value }}
+        </div>
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-300 group-hover:scale-105"
+          style="background: rgba(0, 242, 254, 0.12); border-color: rgba(0, 242, 254, 0.25); color: #00f2fe;">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mt-2">
+        <span class="text-xs font-semibold tracking-wide" style="color: var(--muted);">
+          {{ stats()[1].title }}
+        </span>
+        <span class="text-[11px] font-mono" [ngClass]="(stats()[1].unreadCount || 0) > 0 ? 'text-amber-400 font-bold' : 'text-slate-400'">
+          {{ stats()[1].change }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Card 3: Dynamic Solutions -->
+    <div class="stat-metric-card cursor-default group" style="border-bottom-color: #a855f7;">
+      <div class="flex items-start justify-between">
+        <div class="text-3xl font-extrabold tracking-tight" style="color: var(--text);">
+          {{ stats()[2].value }}
+        </div>
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-300 group-hover:scale-105"
+          style="background: rgba(168, 85, 247, 0.12); border-color: rgba(168, 85, 247, 0.25); color: #a855f7;">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mt-2">
+        <span class="text-xs font-semibold tracking-wide" style="color: var(--muted);">
+          {{ stats()[2].title }}
+        </span>
+        <span class="text-[11px] font-mono text-purple-400">
+          {{ stats()[2].change }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Card 4: System Telemetry -->
+    <div class="stat-metric-card cursor-default group" style="border-bottom-color: #10b981;">
+      <div class="flex items-start justify-between">
+        <div class="text-3xl font-extrabold tracking-tight" style="color: var(--text);">
+          {{ stats()[3].value }}
+        </div>
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-300 group-hover:scale-105"
+          style="background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.25); color: #10b981;">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mt-2">
+        <span class="text-xs font-semibold tracking-wide" style="color: var(--muted);">
+          {{ stats()[3].title }}
+        </span>
+        <span class="text-[11px] font-mono text-emerald-400 font-bold">
+          {{ stats()[3].change }}
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 6174 Attractor Multi-Wave Harmonic Convergence Chart (Elevated Card) -->
+  <div class="card card-pad space-y-3">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold tracking-wide" style="color: var(--text);">
+        6174 Real-time Attractor Convergence
+      </h3>
+      <span class="text-xs font-mono font-bold px-2 py-0.5 rounded border" style="background: var(--surface2); border-color: var(--border); color: #00f2fe;">
+        Live Stream
+      </span>
+    </div>
+
+    <!-- Compact Interactive SVG Chart Container -->
+    <div class="relative w-full overflow-hidden">
+      <svg class="w-full h-44 sm:h-48" viewBox="0 0 1000 205" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="convergenceGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.28"/>
+            <stop offset="70%" stop-color="#0284c7" stop-opacity="0.06"/>
+            <stop offset="100%" stop-color="#0284c7" stop-opacity="0.0"/>
+          </linearGradient>
+
+          <filter id="waveGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2.5" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+        </defs>
+
+        <!-- Horizontal Subtle Grid Lines -->
+        <line x1="45" y1="20" x2="985" y2="20" stroke="rgba(148, 163, 184, 0.1)" stroke-dasharray="3 3"/>
+        <line x1="45" y1="60" x2="985" y2="60" stroke="rgba(148, 163, 184, 0.1)" stroke-dasharray="3 3"/>
+        <line x1="45" y1="100" x2="985" y2="100" stroke="rgba(148, 163, 184, 0.1)" stroke-dasharray="3 3"/>
+        <line x1="45" y1="140" x2="985" y2="140" stroke="rgba(148, 163, 184, 0.1)" stroke-dasharray="3 3"/>
+        <line x1="45" y1="175" x2="985" y2="175" stroke="rgba(148, 163, 184, 0.16)"/>
+
+        <!-- Y-Axis Labels -->
+        <text x="18" y="24" fill="#64748b" font-size="10.5" font-family="JetBrains Mono, monospace">100</text>
+        <text x="24" y="64" fill="#64748b" font-size="10.5" font-family="JetBrains Mono, monospace">75</text>
+        <text x="24" y="104" fill="#64748b" font-size="10.5" font-family="JetBrains Mono, monospace">50</text>
+        <text x="24" y="144" fill="#64748b" font-size="10.5" font-family="JetBrains Mono, monospace">25</text>
+        <text x="30" y="179" fill="#64748b" font-size="10.5" font-family="JetBrains Mono, monospace">0</text>
+
+        <!-- Area Gradient Under Curve -->
+        <path 
+          d="M 45,170 C 100,160 140,125 180,140 C 220,155 260,110 300,135 C 340,160 380,115 420,105 C 460,95 500,140 540,115 C 580,90 620,130 660,100 C 700,60 740,120 780,100 C 820,80 870,115 910,75 C 940,45 965,30 985,25 L 985,175 L 45,175 Z" 
+          fill="url(#convergenceGrad)"
+        />
+
+        <!-- Secondary Parallel Glow Wave -->
+        <path 
+          d="M 45,170 C 100,165 140,135 180,148 C 220,162 260,120 300,145 C 340,168 380,125 420,115 C 460,105 500,148 540,125 C 580,100 620,138 660,110 C 700,72 740,128 780,110 C 820,90 870,125 910,85 C 940,55 965,40 985,35" 
+          fill="none" 
+          stroke="#0ea5e9" 
+          stroke-width="1.5"
+          stroke-opacity="0.45"
+        />
+
+        <!-- Primary Radiant Harmonic Waveform (Matching Mockup) -->
+        <path 
+          d="M 45,170 C 100,160 140,125 180,140 C 220,155 260,110 300,135 C 340,160 380,115 420,105 C 460,95 500,140 540,115 C 580,90 620,130 660,100 C 700,60 740,120 780,100 C 820,80 870,115 910,75 C 940,45 965,30 985,25" 
+          fill="none" 
+          stroke="#00f2fe" 
+          stroke-width="3"
+          stroke-linecap="round"
+          filter="url(#waveGlow)"
+        />
+
+        <!-- Vertical Tracking Line at Active Marker (x=700) -->
+        <line x1="700" y1="60" x2="700" y2="175" stroke="rgba(0, 242, 254, 0.45)" stroke-dasharray="3 3"/>
+
+        <!-- Active Concentric Point at (700, 60) -->
+        <circle cx="700" cy="60" r="8" fill="rgba(0, 242, 254, 0.28)"/>
+        <circle cx="700" cy="60" r="4.5" fill="#00f2fe" stroke="#04101e" stroke-width="1.5"/>
+
+        <!-- Floating Active Tooltip Badge (Matching Mockup) -->
+        <g transform="translate(625, 8)">
+          <rect width="130" height="38" rx="6" fill="#0a1220" stroke="rgba(56, 189, 248, 0.45)" stroke-width="1"/>
+          <text x="10" y="15" fill="#94a3b8" font-size="10" font-family="JetBrains Mono, monospace">1:11 PM</text>
+          <circle cx="12" cy="27" r="2.5" fill="#00f2fe"/>
+          <text x="19" y="30" fill="#38bdf8" font-size="10.5" font-weight="bold" font-family="JetBrains Mono, monospace">Convergence: 9.35</text>
+        </g>
+
+        <!-- X-Axis Timeline Markers (Matching Mockup) -->
+        <text x="45" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">1:00 PM</text>
+        <text x="130" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">2:00 PM</text>
+        <text x="230" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">4:00 PM</text>
+        <text x="330" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">6:00 PM</text>
+        <text x="430" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">8:00 PM</text>
+        <text x="530" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">1:00 PM</text>
+        <text x="630" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">3:00 PM</text>
+        <text x="730" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">5:00 PM</text>
+        <text x="830" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">1:00 PM</text>
+        <text x="910" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">4:00 PM</text>
+        <text x="965" y="196" fill="#64748b" font-size="10" font-family="JetBrains Mono, monospace">8:00 PM</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Recent Platform Activity Table (Elevated Card) -->
+  <div class="card overflow-hidden">
+    
+    <!-- Table Header -->
+    <div class="py-3.5 px-5 sm:px-6 border-b flex items-center justify-between" style="background: var(--surface2); border-color: var(--border);">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-bold tracking-wide" style="color: var(--text);">
+          Recent Platform Activity
+        </h3>
+        <span class="text-[11px] font-mono font-bold px-2 py-0.5 rounded border"
+          style="background: var(--surface); border-color: var(--border); color: var(--accent);">
+          {{ activities().length }} Records
+        </span>
+      </div>
+      <button 
+        type="button" 
+        (click)="refreshData()" 
+        [disabled]="isLoading()" 
+        class="text-xs px-2.5 py-1 rounded border border-border bg-surface hover:bg-surface2 flex items-center gap-1.5 transition-colors cursor-pointer text-muted hover:text-white"
+        title="Refresh Live Metrics & Activity">
+        <svg class="w-3.5 h-3.5" [class.animate-spin]="isLoading()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>Refresh</span>
+      </button>
+    </div>
+
+    <!-- Table Responsive Wrapper -->
+    <div class="table-responsive">
+      <table class="w-full text-left text-xs border-collapse">
+        <thead>
+          <tr class="border-b font-mono uppercase text-[10.5px] tracking-wider"
+            style="background: var(--surface2); border-color: var(--border); color: var(--muted);">
+            <th class="py-3 px-5 sm:px-6">Title</th>
+            <th class="py-3 px-5 sm:px-6">Role/Category</th>
+            <th class="py-3 px-5 sm:px-6">Status</th>
+            <th class="py-3 px-5 sm:px-6">Date</th>
+            <th class="py-3 px-5 sm:px-6 text-right">Quick Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y" style="border-color: var(--border);">
+          @for (item of activities(); track item.id) {
+            <tr class="hover:bg-slate-800/20 transition-colors">
+              <td class="py-3.5 px-5 sm:px-6 font-bold" style="color: var(--text);">
+                {{ item.title }}
+              </td>
+              <td class="py-3.5 px-5 sm:px-6 font-medium" style="color: var(--muted);">
+                {{ item.category }}
+              </td>
+              <td class="py-3.5 px-5 sm:px-6">
+                @switch (item.status) {
+                  @case ('Live') {
+                    <span class="badge-live">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>Live</span>
+                    </span>
+                  }
+                  @case ('Pending') {
+                    <span class="badge-pending">
+                      <span>Pending</span>
+                    </span>
+                  }
+                  @case ('Review') {
+                    <span class="badge-review">
+                      <span>Review</span>
+                    </span>
+                  }
+                }
+              </td>
+              <td class="py-3.5 px-5 sm:px-6 font-mono text-[11px]" style="color: var(--muted);">
+                {{ item.date }}
+              </td>
+              <td class="py-3.5 px-5 sm:px-6 text-right">
+                <div class="flex items-center justify-end gap-1.5">
+                  <button type="button" class="btn-action-edit" (click)="navigateToAction(item, 'edit')">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    <span>Edit</span>
+                  </button>
+                  <button type="button" class="btn-action-view" (click)="navigateToAction(item, 'view')">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    <span>View</span>
+                  </button>
+                  <button type="button" class="btn-action-manage" (click)="navigateToAction(item, 'manage')">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Manage</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

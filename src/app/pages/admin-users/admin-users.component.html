@@ -1,0 +1,459 @@
+<div class="space-y-6">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3">
+            <span class="p-2 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/25">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </span>
+            <h1 class="text-2xl font-bold tracking-tight" style="color: var(--text);">Administrative Operators Directory</h1>
+            <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/30">
+              SuperAdmin Enclave
+            </span>
+          </div>
+          <p class="text-sm mt-1" style="color: var(--muted);">
+            Delegate multi-operator access, invite system architects, issue revocations, or terminate administrative sessions.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Refresh -->
+          <button
+            (click)="refreshData()"
+            [disabled]="loading()"
+            class="btn-secondary"
+            title="Refresh Directory">
+            <svg class="w-4 h-4" [class.animate-spin]="loading()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>Refresh</span>
+          </button>
+
+          <!-- Invite Button -->
+          <button
+            (click)="openInviteModal()"
+            class="btn-primary"
+            style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+            <span>Invite New Operator</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Unified Toolbar & Tab Navigation (Card Container) -->
+      <div class="card card-pad" style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+          <!-- Tab Pills -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button
+              (click)="activeTab.set('operators')"
+              [style.background]="activeTab() === 'operators' ? '#7c3aed' : 'var(--surface2)'"
+              [style.color]="activeTab() === 'operators' ? '#fff' : 'var(--muted)'"
+              [style.border-color]="activeTab() === 'operators' ? '#7c3aed' : 'var(--border)'"
+              style="padding: 7.5px 14px; border: 1px solid; border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px;">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span>Active Administrators</span>
+              <span style="font-size: 11px; padding: 2px 7px; border-radius: 20px; background: rgba(255,255,255,0.18);">
+                {{ admins().length }}
+              </span>
+            </button>
+
+            <button
+              (click)="activeTab.set('invitations')"
+              [style.background]="activeTab() === 'invitations' ? '#7c3aed' : 'var(--surface2)'"
+              [style.color]="activeTab() === 'invitations' ? '#fff' : 'var(--muted)'"
+              [style.border-color]="activeTab() === 'invitations' ? '#7c3aed' : 'var(--border)'"
+              style="padding: 7.5px 14px; border: 1px solid; border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px;">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span>Invitations Sent</span>
+              <span *ngIf="pendingInvitationsCount() > 0" style="font-size: 11px; padding: 2px 7px; border-radius: 20px; background: #38bdf8; color: #030712; font-weight: 800;">
+                {{ pendingInvitationsCount() }} Pending
+              </span>
+            </button>
+          </div>
+
+          <!-- Search Input -->
+          <div *ngIf="activeTab() === 'operators'" style="position: relative; flex: 1; max-width: 360px; min-width: 240px;">
+            <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--muted); pointer-events: none;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              [(ngModel)]="searchAdminQuery"
+              placeholder="Search operators by name, email, or role..."
+              style="width: 100%; padding: 8px 12px 8px 34px; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; color: var(--text); font-size: 12.5px; outline: none;" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================================= -->
+      <!-- TAB 1: ACTIVE OPERATORS                                                                   -->
+      <!-- ========================================================================================= -->
+      <div *ngIf="activeTab() === 'operators'" class="space-y-4">
+        <!-- Elevated Card Table Container -->
+        <div class="card overflow-hidden">
+          <div class="table-responsive">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b text-xs font-semibold uppercase tracking-wider"
+                  style="background: var(--surface2); border-color: var(--border); color: var(--muted);">
+                  <th class="py-3 px-5">Operator</th>
+                  <th class="py-3 px-5">Security Roles</th>
+                  <th class="py-3 px-5">Account Status</th>
+                  <th class="py-3 px-5">Last Activity</th>
+                  <th class="py-3 px-5">Created</th>
+                  <th class="py-3 px-5 text-right">Access Control</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: var(--border);">
+                <tr *ngFor="let admin of filteredAdmins()" class="hover:bg-slate-800/20 transition-colors">
+                  <td class="py-3.5 px-5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold font-mono"
+                        style="background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.3); color: #c084fc;">
+                        {{ getInitials(admin.fullName) }}
+                      </div>
+                      <div>
+                        <div class="font-semibold flex items-center gap-1.5" style="color: var(--text);">
+                          <span>{{ admin.fullName }}</span>
+                          <span *ngIf="isCurrentUser(admin.email)" class="px-1.5 py-0.2 text-[10px] font-bold rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                            YOU
+                          </span>
+                        </div>
+                        <div class="text-xs font-mono" style="color: var(--muted);">{{ admin.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-3.5 px-5">
+                    <div class="flex flex-wrap gap-1">
+                      <span *ngFor="let role of admin.roles" class="px-2 py-0.5 text-xs font-semibold rounded-full"
+                        [ngClass]="{
+                          'bg-purple-500/15 text-purple-400 border border-purple-500/30': role.toUpperCase() === 'SUPERADMIN',
+                          'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30': role.toUpperCase() === 'SYSTEMS_FELLOW',
+                          'bg-blue-500/15 text-blue-400 border border-blue-500/30': role.toUpperCase() === 'CONTENT_OPERATOR',
+                          'bg-slate-500/15 text-slate-300 border border-slate-500/30': role.toUpperCase() === 'ADMIN'
+                        }">
+                        {{ role }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="py-3.5 px-5">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full"
+                      [ngClass]="{
+                        'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30': admin.isActive,
+                        'bg-rose-500/15 text-rose-400 border border-rose-500/30': !admin.isActive
+                      }">
+                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="{
+                        'bg-emerald-400': admin.isActive,
+                        'bg-rose-400': !admin.isActive
+                      }"></span>
+                      {{ admin.isActive ? 'Active' : 'Suspended' }}
+                    </span>
+                  </td>
+                  <td class="py-3.5 px-5 text-xs font-mono" style="color: var(--muted);">
+                    {{ admin.lastLoginAt ? (admin.lastLoginAt | date:'medium') : 'Never logged in' }}
+                  </td>
+                  <td class="py-3.5 px-5 text-xs font-mono" style="color: var(--muted);">
+                    {{ admin.createdAt | date:'mediumDate' }}
+                  </td>
+                  <td class="py-3.5 px-5 text-right">
+                    <div class="flex items-center justify-end gap-2" *ngIf="!isCurrentUser(admin.email)">
+                      <!-- Suspend / Reactivate -->
+                      <button
+                        *ngIf="admin.isActive"
+                        (click)="confirmSuspend(admin)"
+                        class="btn-action-view"
+                        style="color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.1);"
+                        title="Suspend Operator Access">
+                        Suspend
+                      </button>
+                      <button
+                        *ngIf="!admin.isActive"
+                        (click)="executeReactivate(admin)"
+                        class="btn-action-manage"
+                        title="Reactivate Operator Access">
+                        Reactivate
+                      </button>
+
+                      <!-- Delete -->
+                      <button
+                        (click)="confirmDelete(admin)"
+                        class="btn-action-delete"
+                        title="Permanently Delete Administrator">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <span *ngIf="isCurrentUser(admin.email)" class="text-xs italic" style="color: var(--muted);">
+                      Current Session
+                    </span>
+                  </td>
+                </tr>
+
+                <tr *ngIf="filteredAdmins().length === 0">
+                  <td colspan="6" class="py-12 text-center" style="color: var(--muted);">
+                    <div class="flex flex-col items-center justify-center gap-2">
+                      <svg class="w-8 h-8 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      <span>No administrator records found matching query.</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================================= -->
+      <!-- TAB 2: INVITATIONS LIFECYCLE                                                              -->
+      <!-- ========================================================================================= -->
+      <div *ngIf="activeTab() === 'invitations'" class="space-y-4">
+        <!-- Elevated Card Table Container -->
+        <div class="card overflow-hidden">
+          <div class="table-responsive">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b text-xs font-semibold uppercase tracking-wider"
+                  style="background: var(--surface2); border-color: var(--border); color: var(--muted);">
+                  <th class="py-3 px-5">Recipient</th>
+                  <th class="py-3 px-5">Assigned Role</th>
+                  <th class="py-3 px-5">Invited By</th>
+                  <th class="py-3 px-5">Lifecycle Status</th>
+                  <th class="py-3 px-5">Expires At</th>
+                  <th class="py-3 px-5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: var(--border);">
+                <tr *ngFor="let inv of invitations()" class="hover:bg-slate-800/20 transition-colors">
+                  <td class="py-3.5 px-5">
+                    <div class="font-semibold" style="color: var(--text);">{{ inv.fullName }}</div>
+                    <div class="text-xs font-mono" style="color: var(--muted);">{{ inv.email }}</div>
+                  </td>
+                  <td class="py-3.5 px-5">
+                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                      {{ inv.assignedRole }}
+                    </span>
+                  </td>
+                  <td class="py-3.5 px-5 text-xs" style="color: var(--muted);">
+                    {{ inv.invitedByAdminName }}
+                  </td>
+                  <td class="py-3.5 px-5">
+                    <!-- Status pill -->
+                    <span *ngIf="inv.isAccepted" class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                      Accepted
+                    </span>
+                    <span *ngIf="inv.isRevoked" class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                      Revoked
+                    </span>
+                    <span *ngIf="!inv.isAccepted && !inv.isRevoked && inv.isExpired" class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                      Expired
+                    </span>
+                    <span *ngIf="!inv.isAccepted && !inv.isRevoked && !inv.isExpired" class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                      Pending Activation
+                    </span>
+                  </td>
+                  <td class="py-3.5 px-5 text-xs font-mono" style="color: var(--muted);">
+                    {{ inv.expiresAt | date:'medium' }}
+                  </td>
+                  <td class="py-3.5 px-5 text-right">
+                    <div class="flex items-center justify-end gap-2" *ngIf="!inv.isAccepted && !inv.isRevoked">
+                      <button
+                        (click)="resendInvitation(inv.id)"
+                        class="btn-action-edit">
+                        Resend
+                      </button>
+                      <button
+                        (click)="revokeInvitation(inv.id)"
+                        class="btn-action-delete"
+                        title="Revoke Invitation Token">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                    <span *ngIf="inv.isAccepted || inv.isRevoked" class="text-xs" style="color: var(--muted);">
+                      No actions
+                    </span>
+                  </td>
+                </tr>
+
+                <tr *ngIf="invitations().length === 0">
+                  <td colspan="6" class="py-12 text-center" style="color: var(--muted);">
+                    <div class="flex flex-col items-center justify-center gap-2">
+                      <svg class="w-8 h-8 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <span>No administrator invitations on record.</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================================= -->
+      <!-- MODAL: INVITE NEW ADMINISTRATOR                                                          -->
+      <!-- ========================================================================================= -->
+      <div *ngIf="isInviteModalOpen()" class="modal-backdrop" (click)="closeInviteModal()">
+        <div class="modal-dialog" style="max-width: 520px;" (click)="$event.stopPropagation()">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title">Invite New Administrator</h3>
+              <p class="modal-subtitle">Generate an enclave invitation with cryptographic activation token</p>
+            </div>
+            <button (click)="closeInviteModal()" class="drawer-close-btn" title="Close Modal">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="modal-body space-y-4">
+            <div>
+              <label class="form-label">Full Name</label>
+              <input
+                type="text"
+                [(ngModel)]="inviteForm.fullName"
+                placeholder="e.g. Dr. Vance Thorne"
+                class="form-control" />
+            </div>
+
+            <div>
+              <label class="form-label">Email Address</label>
+              <input
+                type="email"
+                [(ngModel)]="inviteForm.email"
+                placeholder="operator@6174core.internal"
+                class="form-control" />
+            </div>
+
+            <div>
+              <label class="form-label">Assigned Enclave Role</label>
+              <select [(ngModel)]="inviteForm.assignedRole" class="form-select">
+                <option value="Admin">Admin (General Telemetry & CRM Access)</option>
+                <option value="CONTENT_OPERATOR">CONTENT_OPERATOR (Solutions & Academy CMS)</option>
+                <option value="SYSTEMS_FELLOW">SYSTEMS_FELLOW (Careers & Curriculum Review)</option>
+                <option value="SUPERADMIN">SUPERADMIN (Full Root & Security Governance)</option>
+              </select>
+            </div>
+
+            <div class="info-callout">
+              <div class="info-callout-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Automated Activation Flow
+              </div>
+              Upon dispatch, an invitation is recorded with a cryptographically secure 48-hour expiration token sent to the operator's mailbox.
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button
+              (click)="closeInviteModal()"
+              class="btn-secondary">
+              Cancel
+            </button>
+            <button
+              (click)="executeInvite()"
+              class="btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              <span>Send Invitation</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suspend Confirmation Modal -->
+      <div *ngIf="adminToSuspend()" class="modal-backdrop" (click)="adminToSuspend.set(null)">
+        <div class="modal-dialog" style="max-width: 440px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="color: #fbbf24;">Suspend Administrator Access?</h3>
+              <p class="modal-subtitle">Session revocation & credential lockdown</p>
+            </div>
+            <button (click)="adminToSuspend.set(null)" class="drawer-close-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 13.5px; color: var(--text2); line-height: 1.5;">
+              Are you sure you want to suspend <strong style="color: var(--text);">{{ adminToSuspend()?.fullName }}</strong>?
+              This will immediately revoke all active refresh tokens and terminate their current session.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              (click)="adminToSuspend.set(null)"
+              class="btn-secondary">
+              Cancel
+            </button>
+            <button
+              (click)="executeSuspend()"
+              class="btn-primary"
+              style="background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); color: #000; border-color: rgba(245, 158, 11, 0.4);">
+              Suspend Account
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div *ngIf="adminToDelete()" class="modal-backdrop" (click)="adminToDelete.set(null)">
+        <div class="modal-dialog" style="max-width: 440px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="color: #f87171;">Permanently Delete Administrator?</h3>
+              <p class="modal-subtitle">Irreversible operator purge</p>
+            </div>
+            <button (click)="adminToDelete.set(null)" class="drawer-close-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 13.5px; color: var(--text2); line-height: 1.5;">
+              Are you sure you want to delete <strong style="color: var(--text);">{{ adminToDelete()?.fullName }}</strong>?
+              Their database profile, roles, and sessions will be destroyed. This action cannot be undone.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              (click)="adminToDelete.set(null)"
+              class="btn-secondary">
+              Cancel
+            </button>
+            <button
+              (click)="executeDelete()"
+              class="btn-primary"
+              style="background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); border-color: rgba(225, 29, 72, 0.4);">
+              Delete Operator
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>

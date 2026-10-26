@@ -1,0 +1,160 @@
+<div class="image-uploader-wrapper">
+  <div class="flex items-center justify-between mb-1.5">
+    <label class="form-label mb-0">
+      {{ label }}
+      <span *ngIf="required" class="text-rose-500">*</span>
+    </label>
+    <button 
+      type="button" 
+      (click)="showManualInput.set(!showManualInput())"
+      class="text-[11px] font-mono text-muted hover:text-accent2 transition-colors flex items-center gap-1">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+      <span>{{ showManualInput() ? 'Hide URL Input' : 'Direct URL' }}</span>
+    </button>
+  </div>
+
+  <!-- Direct URL input toggle -->
+  <div *ngIf="showManualInput()" class="mb-3">
+    <input 
+      type="text" 
+      [ngModel]="imageUrl" 
+      (ngModelChange)="onManualUrlChange($event)"
+      placeholder="https://res.cloudinary.com/... or assets/img/..." 
+      class="form-control font-mono text-xs" />
+  </div>
+
+  <!-- ACTIVE IMAGE PREVIEW IN USE (Visible on Admin Portal) -->
+  <div *ngIf="imageUrl && !imageError()" class="uploader-active-card">
+    <div class="flex items-center gap-4">
+      <!-- Image Thumbnail Container -->
+      <div 
+        class="uploader-thumb-box"
+        [ngClass]="{
+          'thumb-circle': previewShape === 'circle',
+          'thumb-banner': previewShape === 'banner',
+          'thumb-rounded': previewShape === 'rounded'
+        }">
+        <img 
+          [src]="getResolvedUrl()" 
+          alt="Active Asset Preview"
+          (error)="onImageError()"
+          (load)="onImageLoad()"
+          class="w-full h-full object-cover" />
+      </div>
+
+      <!-- Asset Details & Controls -->
+      <div class="flex-1 min-w-0 space-y-1.5">
+        <div class="flex items-center gap-2">
+          <span 
+            *ngIf="isCloudinary()" 
+            class="badge-cdn">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+            </svg>
+            Cloudinary CDN
+          </span>
+          <span 
+            *ngIf="!isCloudinary()" 
+            class="badge-local">
+            Active Image In Use
+          </span>
+        </div>
+
+        <div class="uploader-url-pill font-mono text-[11px] truncate" [title]="imageUrl">
+          {{ imageUrl }}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-2 pt-1">
+          <input 
+            #fileReplaceInput 
+            type="file" 
+            accept="image/*" 
+            (change)="onFileSelected($event)" 
+            class="hidden" />
+
+          <button 
+            type="button" 
+            (click)="fileReplaceInput.click()" 
+            [disabled]="isUploading()"
+            class="btn-sm-secondary">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Replace from PC</span>
+          </button>
+
+          <button 
+            type="button" 
+            (click)="removeImage()" 
+            class="btn-sm-danger">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+            </svg>
+            <span>Remove</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD DROPZONE (When no image or fallback) -->
+  <div 
+    *ngIf="!imageUrl || imageError()" 
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="fileInput.click()"
+    class="uploader-dropzone"
+    [class.dragging]="isDragging()"
+    [class.uploading]="isUploading()">
+
+    <input 
+      #fileInput 
+      type="file" 
+      accept="image/*" 
+      (change)="onFileSelected($event)" 
+      class="hidden" />
+
+    <!-- Uploading Spinner -->
+    <div *ngIf="isUploading()" class="flex flex-col items-center justify-center py-4 space-y-2">
+      <div class="w-8 h-8 rounded-full border-2 border-accent2 border-t-transparent animate-spin"></div>
+      <span class="text-xs font-mono font-bold text-accent2 animate-pulse">Uploading asset to Cloudinary CDN...</span>
+    </div>
+
+    <!-- Ready to Upload Drop Area -->
+    <div *ngIf="!isUploading()" class="flex flex-col items-center justify-center py-4 text-center cursor-pointer space-y-2">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-sky-500/10 border border-sky-500/20 text-accent2 group-hover:scale-110 transition-transform">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+
+      <div>
+        <div class="text-xs font-bold text-text">
+          <span class="text-accent2 hover:underline">Choose an image from your PC</span> or drag & drop
+        </div>
+        <p class="text-[11px] text-muted mt-0.5">
+          {{ helpText }}
+        </p>
+      </div>
+
+      <div class="flex items-center gap-1.5 pt-1 text-[10px] font-mono font-semibold text-muted">
+        <span class="px-1.5 py-0.5 rounded border border-border bg-surface2">PNG</span>
+        <span class="px-1.5 py-0.5 rounded border border-border bg-surface2">JPG</span>
+        <span class="px-1.5 py-0.5 rounded border border-border bg-surface2">WEBP</span>
+        <span class="px-1.5 py-0.5 rounded border border-border bg-surface2">SVG</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="imageError() && imageUrl" class="text-[11px] text-amber-400 mt-1 flex items-center gap-1">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>Could not render preview for "{{ imageUrl }}". Click "Replace from PC" to upload a new asset.</span>
+  </div>
+</div>

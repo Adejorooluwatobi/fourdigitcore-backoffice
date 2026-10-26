@@ -1,0 +1,737 @@
+<div class="space-y-6 fade-in">
+      
+      <!-- Page Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--info-box-bg); border: 1px solid var(--info-box-border); display: flex; align-items: center; justify-content: center; color: var(--accent2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 2v7.31L4.69 18.5a2 2 0 0 0 1.73 3h11.16a2 2 0 0 0 1.73-3L14 9.31V2"/>
+              <path d="M8.5 2h7"/>
+              <path d="M14 9.3h-4"/>
+            </svg>
+          </div>
+          <div>
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em;">Innovation & Research CMS</h1>
+            <p style="font-size: 13px; color: var(--muted);">Direct control plane for academic publications, patent filings, and physical photonic benchmarks.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button (click)="loadAllData()" class="btn-secondary" style="font-size: 12.5px; padding: 8px 14px;" [disabled]="isLoading()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.animate-spin]="isLoading()">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Sync Publications</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Segmented Control Tab Navigation -->
+      <div style="display: flex; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 2px;">
+        <button 
+          (click)="activeTab.set('whitepapers')" 
+          [class.active-tab]="activeTab() === 'whitepapers'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span>Research Whitepapers ({{ whitepapers().length }})</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('patents')" 
+          [class.active-tab]="activeTab() === 'patents'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>Patent Portfolio ({{ patents().length }})</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('benchmarks')" 
+          [class.active-tab]="activeTab() === 'benchmarks'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Photonic Benchmarks ({{ benchmarks().length }})</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('hero')" 
+          [class.active-tab]="activeTab() === 'hero'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+          <span>Research Lab HUD</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('convergence')" 
+          [class.active-tab]="activeTab() === 'convergence'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16v4L12 14l8 6v-4"/>
+            <circle cx="12" cy="14" r="2"/>
+          </svg>
+          <span>Convergence Pipeline ({{ convergenceSteps().length }})</span>
+        </button>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 1: RESEARCH WHITEPAPERS                                              -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'whitepapers'" class="space-y-4">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <p style="font-size: 13px; color: var(--muted);">Peer-reviewed publications, Kaprekar convergence proofs, and hardware enclave specifications.</p>
+          <button (click)="openWhitepaperDrawer()" class="btn-primary" style="font-size: 12.5px; padding: 8px 14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Publish Whitepaper</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let wp of whitepapers()" class="card card-pad flex flex-col justify-between" style="gap: 16px;">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 11px; font-weight: 800; font-family: monospace; color: var(--accent2); background: var(--info-box-bg); border: 1px solid var(--info-box-border); padding: 3px 8px; border-radius: 6px;">
+                  v{{ wp.version }}
+                </span>
+                <span style="font-size: 11px; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.12); padding: 3px 8px; border-radius: 6px;">
+                  {{ wp.downloadCount }} Downloads
+                </span>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 4px;">{{ wp.title }}</h3>
+              <div style="font-size: 12px; font-family: monospace; color: var(--muted); margin-bottom: 8px;">{{ wp.authors }}</div>
+              <p style="font-size: 12.5px; color: var(--text2); line-height: 1.5; margin-bottom: 12px;">{{ wp.abstract }}</p>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 12px;">
+              <a [href]="wp.pdfUrl" target="_blank" style="font-size: 12px; color: var(--accent2); font-weight: 600;" class="hover:underline flex items-center gap-1">
+                <span>View Document</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+              <div style="display: flex; gap: 8px;">
+                <button (click)="openWhitepaperDrawer(wp)" class="btn-secondary" style="font-size: 12px; padding: 6px 12px;">Edit</button>
+                <button (click)="confirmDeleteWhitepaper(wp)" class="btn-action-delete" title="Delete Whitepaper">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 2: PATENTS PORTFOLIO                                                 -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'patents'" class="space-y-4">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <p style="font-size: 13px; color: var(--muted);">Physical silicon architecture patents, Ring-0 mathematical bypass mechanisms, and zero-trust proofs.</p>
+          <button (click)="openPatentDrawer()" class="btn-primary" style="font-size: 12.5px; padding: 8px 14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Record Patent</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let pt of patents()" class="card card-pad flex flex-col justify-between" style="gap: 16px;">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 11px; font-weight: 800; font-family: monospace; color: var(--accent2);">{{ pt.patentNumber }}</span>
+                <span class="tag-pill" style="font-size: 11px; font-weight: 700;">{{ getPatentStatusLabel(pt.status) }}</span>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 4px;">{{ pt.title }}</h3>
+              <div style="font-size: 12px; font-family: monospace; color: var(--muted); margin-bottom: 8px;">Inventors: {{ pt.inventors }}</div>
+              <p style="font-size: 12.5px; color: var(--text2); line-height: 1.5; margin-bottom: 12px;">{{ pt.abstract }}</p>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 12px;">
+              <span style="font-size: 12px; color: var(--muted);">Filed: {{ pt.filingDate | date:'mediumDate' }}</span>
+              <div style="display: flex; gap: 8px;">
+                <button (click)="openPatentDrawer(pt)" class="btn-secondary" style="font-size: 12px; padding: 6px 12px;">Edit</button>
+                <button (click)="confirmDeletePatent(pt)" class="btn-action-delete" title="Delete Patent">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="patents().length === 0" class="col-span-full card card-pad text-center py-10">
+            <p style="color: var(--muted); font-size: 13px;">No physical silicon architecture patents recorded yet. Click "Record Patent" above to add one.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 3: PHOTONIC BENCHMARKS                                               -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'benchmarks'" class="space-y-4">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <p style="font-size: 13px; color: var(--muted);">Experimental cluster validation logs proving bounded convergence and deterministic throughput.</p>
+          <button (click)="openBenchmarkDrawer()" class="btn-primary" style="font-size: 12.5px; padding: 8px 14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Benchmark</span>
+          </button>
+        </div>
+
+        <div class="card card-pad overflow-x-auto">
+          <table class="w-full text-left" style="font-size: 13px;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border); color: var(--muted); font-size: 11px; text-transform: uppercase;">
+                <th style="padding: 10px 14px;">Subsystem</th>
+                <th style="padding: 10px 14px;">Workload</th>
+                <th style="padding: 10px 14px;">Throughput (TPS)</th>
+                <th style="padding: 10px 14px;">P50 Latency</th>
+                <th style="padding: 10px 14px;">P99 Latency</th>
+                <th style="padding: 10px 14px;">Cycles</th>
+                <th style="padding: 10px 14px; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of benchmarks()" style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px 14px; font-weight: 700; color: var(--text);">{{ b.subsystem }}</td>
+                <td style="padding: 12px 14px; color: var(--text2);">{{ b.workloadType }}</td>
+                <td style="padding: 12px 14px; font-family: monospace; color: #10b981; font-weight: 700;">{{ b.throughputTps | number }}</td>
+                <td style="padding: 12px 14px; font-family: monospace; color: var(--accent2);">{{ b.latencyP50Ms }}ms</td>
+                <td style="padding: 12px 14px; font-family: monospace; color: var(--accent2);">{{ b.latencyP99Ms }}ms</td>
+                <td style="padding: 12px 14px; font-family: monospace; color: var(--muted);">{{ b.invarianceCycles }}</td>
+                <td style="padding: 12px 14px; text-align: right;">
+                  <button (click)="openBenchmarkDrawer(b)" class="btn-secondary" style="font-size: 11px; padding: 4px 10px; margin-right: 6px;">Edit</button>
+                  <button (click)="confirmDeleteBenchmark(b)" class="btn-action-delete" title="Delete">✕</button>
+                </td>
+              </tr>
+              <tr *ngIf="benchmarks().length === 0">
+                <td colspan="7" class="text-center py-8 text-xs" style="color: var(--muted);">
+                  No photonic benchmark logs recorded. Click "Add Benchmark" above to register cluster metrics.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 4: RESEARCH LAB HUD                                                   -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'hero'" class="card card-pad space-y-4">
+        <form [formGroup]="heroForm" (ngSubmit)="saveHero()" class="space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+            <span>Research Lab Hero Headline & Photonic Silicon Indicators</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Badge Text</label>
+              <input type="text" formControlName="badgeText" placeholder="01 // RESEARCH LABS & PROOF ENGINES" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Lab Status Pill</label>
+              <input type="text" formControlName="labStatusPill" placeholder="● ACTIVE R&D // LAB 6174" class="form-control font-mono" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">Headline</label>
+              <input type="text" formControlName="headline" class="form-control" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">Subheadline Narrative</label>
+              <textarea rows="3" formControlName="subheadline" class="form-control form-textarea"></textarea>
+            </div>
+            <div>
+              <label class="form-label">Silicon Die Fab Process</label>
+              <input type="text" formControlName="dieFabText" placeholder="TSMC N3E / PHOTONIC" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Optical Waveguide Wavelength</label>
+              <input type="text" formControlName="opticalWaveguideText" placeholder="1550nm" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Lane Optical Throughput</label>
+              <input type="text" formControlName="laneThroughputText" placeholder="800 Gbps" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Attractor Convergence State</label>
+              <input type="text" formControlName="attractorStateText" placeholder="6174 REACHED" class="form-control font-mono" />
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" [disabled]="isSaving()" class="btn-primary">Save Photonic Indicators</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 5: CONVERGENCE PIPELINE & PROOF STEPS                                 -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'convergence'" class="space-y-6">
+        <!-- Part A: Convergence Proof Thesis & Section Header Form -->
+        <div class="card card-pad space-y-4">
+          <form [formGroup]="convergenceForm" (ngSubmit)="saveConvergenceSection()" class="space-y-4">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div class="form-section-title" style="margin: 0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16v4L12 14l8 6v-4"/>
+                </svg>
+                <span>Kaprekar 6174 Convergence Section & Mathematical Thesis</span>
+              </div>
+              <button type="submit" [disabled]="isSaving() || convergenceForm.invalid" class="btn-primary" style="font-size: 12px; padding: 6px 14px;">
+                Save Proof Thesis
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">Section Badge</label>
+                <input type="text" formControlName="badgeText" placeholder="EXPERIMENTAL BENCHMARK" class="form-control font-mono" />
+              </div>
+              <div>
+                <label class="form-label">Proof Title</label>
+                <input type="text" formControlName="title" placeholder="The 6174 Iterative Convergence Proof" class="form-control" />
+              </div>
+              <div class="md:col-span-2">
+                <label class="form-label">Thesis Abstract / Narrative</label>
+                <textarea rows="2" formControlName="description" placeholder="Every cluster transaction undergoes bounded Kaprekar transformations until it reaches the 6174 attractor equilibrium." class="form-control form-textarea"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Part B: Interactive Convergence Transformations Steps Cards -->
+        <div class="space-y-4">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Iterative Convergence Transformation Steps</h3>
+              <p style="font-size: 12.5px; color: var(--muted);">Step-by-step mathematical state progression rendered on the public innovation page.</p>
+            </div>
+            <button (click)="openStepModal()" class="btn-primary" style="font-size: 12.5px; padding: 8px 14px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>New Transformation Step</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div *ngFor="let step of convergenceSteps()" class="card card-pad flex flex-col justify-between" 
+              [style.border-color]="step.isAttractor ? 'rgba(0, 242, 254, 0.45)' : 'var(--border)'"
+              [style.background]="step.isAttractor ? 'linear-gradient(180deg, rgba(0, 242, 254, 0.05) 0%, var(--card-bg) 100%)' : 'var(--card-bg)'">
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                  <span style="font-size: 10.5px; font-weight: 800; font-family: monospace; letter-spacing: 0.05em; color: var(--accent2);">
+                    {{ step.stepNumberText }}
+                  </span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <span *ngIf="step.isAttractor" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: rgba(0, 242, 254, 0.15); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.3);">
+                      ATTRACTOR
+                    </span>
+                    <span style="font-size: 11px; font-family: monospace; color: var(--muted); background: var(--bg); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border);">
+                      #{{ step.sortOrder }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Math Box -->
+                <div style="padding: 12px; border-radius: 8px; background: #07090e; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 12px;">
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700; color: #00f2fe; letter-spacing: 0.02em;">
+                    {{ step.formulaText }}
+                  </div>
+                  <div *ngIf="step.subFormulaText" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--muted); margin-top: 4px;">
+                    {{ step.subFormulaText }}
+                  </div>
+                </div>
+
+                <p style="font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 12px;">
+                  {{ step.description }}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); padding-top: 10px;">
+                <button (click)="openStepModal(step)" class="btn-secondary" style="font-size: 11.5px; padding: 5px 10px;">Edit</button>
+                <button (click)="confirmDeleteStep(step)" class="btn-action-delete" title="Delete Step">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="convergenceSteps().length === 0" class="col-span-full card card-pad text-center py-10">
+              <p style="color: var(--muted); font-size: 13px;">No convergence steps configured. Click "New Transformation Step" above to add step 1.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- SLIDE-OVER DRAWER: WHITEPAPER EDITOR                                     -->
+      <!-- ========================================================================= -->
+      <div *ngIf="isWhitepaperDrawerOpen" class="drawer-backdrop" (click)="isWhitepaperDrawerOpen = false">
+        <div class="drawer-panel" style="max-width: 600px;" (click)="$event.stopPropagation()">
+          <div class="drawer-header">
+            <div>
+              <h2 class="drawer-title">{{ editingWpId ? 'Edit Whitepaper' : 'Publish Academic Whitepaper' }}</h2>
+              <p class="drawer-sub">Document formal proofs, kernel bypass theorems, and publication citations</p>
+            </div>
+            <button (click)="isWhitepaperDrawerOpen = false" class="drawer-close-btn">✕</button>
+          </div>
+
+          <form [formGroup]="wpForm" (ngSubmit)="saveWhitepaper()" class="drawer-body">
+            <div class="form-section-card">
+              <div>
+                <label class="form-label">Publication Title</label>
+                <input type="text" formControlName="title" placeholder="e.g. Kaprekar Invariance in Distributed Kernels" class="form-control" />
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">URL Slug</label>
+                  <input type="text" formControlName="slug" placeholder="e.g. kaprekar-invariance-kernels" class="form-control font-mono" />
+                </div>
+                <div>
+                  <label class="form-label">Document Version</label>
+                  <input type="text" formControlName="version" placeholder="e.g. 1.0" class="form-control font-mono" />
+                </div>
+              </div>
+              <div>
+                <label class="form-label">Contributing Authors</label>
+                <input type="text" formControlName="authors" placeholder="e.g. Dr. Vance K. Thorne et al." class="form-control" />
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="form-label mb-0">PDF Document Asset</label>
+                  <input #pdfFileInput type="file" accept=".pdf,application/pdf" (change)="uploadPdf($event)" class="hidden" />
+                  <button 
+                    type="button" 
+                    (click)="pdfFileInput.click()" 
+                    [disabled]="isUploadingDoc()"
+                    class="text-xs font-mono text-accent2 hover:underline flex items-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>{{ isUploadingDoc() ? 'Uploading PDF...' : 'Upload PDF from PC' }}</span>
+                  </button>
+                </div>
+                <input type="text" formControlName="pdfUrl" placeholder="https://res.cloudinary.com/... or assets/docs/..." class="form-control font-mono text-xs" />
+              </div>
+              <div>
+                <label class="form-label">Abstract Overview</label>
+                <textarea rows="4" formControlName="abstract" placeholder="Detailed technical abstract..." class="form-control form-textarea"></textarea>
+              </div>
+            </div>
+
+            <div class="drawer-footer" style="padding: 16px 0 0 0; margin-top: 8px;">
+              <button type="button" (click)="isWhitepaperDrawerOpen = false" class="btn-secondary">Cancel</button>
+              <button type="submit" [disabled]="wpForm.invalid || isSaving()" class="btn-primary">
+                {{ editingWpId ? 'Update Whitepaper' : 'Publish Document' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Whitepaper Modal -->
+      <div *ngIf="wpToDelete" class="modal-backdrop" (click)="wpToDelete = null">
+        <div class="modal-dialog" style="max-width: 440px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="color: #f87171;">Delete Research Whitepaper?</h3>
+              <p class="modal-subtitle">Permanent document de-indexing</p>
+            </div>
+            <button (click)="wpToDelete = null" class="drawer-close-btn">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 13.5px; color: var(--text2);">
+              Are you sure you want to permanently delete <strong style="color: var(--text);">"{{ wpToDelete.title }}"</strong>?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button (click)="wpToDelete = null" class="btn-secondary">Cancel</button>
+            <button (click)="executeDeleteWhitepaper()" class="btn-danger">Delete Document</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upsert Convergence Step Modal -->
+      <div *ngIf="isStepModalOpen()" class="modal-backdrop" (click)="closeStepModal()">
+        <div class="modal-dialog" style="max-width: 520px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title">{{ editingStepId() ? 'Edit Convergence Transformation' : 'New Convergence Transformation' }}</h3>
+              <p class="modal-subtitle">Mathematical proof transition card configuration</p>
+            </div>
+            <button (click)="closeStepModal()" class="drawer-close-btn">✕</button>
+          </div>
+
+          <form [formGroup]="stepForm" (ngSubmit)="saveStep()">
+            <div class="modal-body space-y-4">
+              <!-- Live Formula Simulator Preview -->
+              <div style="padding: 12px 14px; border-radius: 8px; background: #07090e; border: 1px solid rgba(0, 242, 254, 0.25);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="font-size: 10px; font-weight: 800; font-family: monospace; color: var(--accent2); letter-spacing: 0.05em;">
+                    {{ stepForm.get('stepNumberText')?.value || 'STEP PREVIEW' }}
+                  </span>
+                  <span *ngIf="stepForm.get('isAttractor')?.value" style="font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: rgba(0, 242, 254, 0.15); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.3);">
+                    ATTRACTOR STATE
+                  </span>
+                </div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #00f2fe;">
+                  {{ stepForm.get('formulaText')?.value || 'Enter mathematical formula...' }}
+                </div>
+                <div *ngIf="stepForm.get('subFormulaText')?.value" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--muted); margin-top: 3px;">
+                  {{ stepForm.get('subFormulaText')?.value }}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">Step Number Label</label>
+                  <input type="text" formControlName="stepNumberText" placeholder="e.g. TRANSFORMATION 01" class="form-control font-mono" />
+                </div>
+                <div>
+                  <label class="form-label">Sort Order</label>
+                  <input type="number" formControlName="sortOrder" class="form-control font-mono" />
+                </div>
+              </div>
+
+              <div>
+                <label class="form-label">Primary Formula (JetBrains Mono)</label>
+                <input type="text" formControlName="formulaText" placeholder="e.g. 5432 - 2345 = 3087" class="form-control font-mono" />
+              </div>
+
+              <div>
+                <label class="form-label">Sub-Formula / Convergence Derivation (Optional)</label>
+                <input type="text" formControlName="subFormulaText" placeholder="e.g. 7641 - 1467 = 6174" class="form-control font-mono" />
+              </div>
+
+              <div>
+                <label class="form-label">Mathematical Explanation</label>
+                <textarea rows="2" formControlName="description" placeholder="Explain the algorithmic entropy reduction at this stage..." class="form-control form-textarea"></textarea>
+              </div>
+
+              <div class="flex items-center pt-1">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" formControlName="isAttractor" class="rounded border-(--border-color) text-cyan-500 focus:ring-cyan-500" />
+                  <span class="text-xs font-semibold text-(--text-primary)">Is Attractor Equilibrium State (6174)?</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" (click)="closeStepModal()" class="btn-secondary">Cancel</button>
+              <button type="submit" [disabled]="stepForm.invalid || isSaving()" class="btn-primary">
+                {{ editingStepId() ? 'Update Transformation Step' : 'Create Transformation Step' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Convergence Step Modal -->
+      <div *ngIf="stepToDelete()" class="modal-backdrop" (click)="stepToDelete.set(null)">
+        <div class="modal-dialog" style="max-width: 440px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="color: #f87171;">Delete Convergence Step?</h3>
+              <p class="modal-subtitle">Will be removed from the public convergence proof pipeline</p>
+            </div>
+            <button (click)="stepToDelete.set(null)" class="drawer-close-btn">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 13.5px; color: var(--text2);">
+              Are you sure you want to delete step <strong style="color: var(--text);">{{ stepToDelete()?.stepNumberText }}</strong> ({{ stepToDelete()?.formulaText }})?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button (click)="stepToDelete.set(null)" class="btn-secondary">Cancel</button>
+            <button (click)="executeDeleteStep()" class="btn-danger">Delete Step</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- SLIDE-OVER DRAWER: PATENT RECORDER & EDITOR                              -->
+      <!-- ========================================================================= -->
+      <div *ngIf="isPatentDrawerOpen" class="drawer-backdrop" (click)="isPatentDrawerOpen = false">
+        <div class="drawer-panel" style="max-width: 600px;" (click)="$event.stopPropagation()">
+          <div class="drawer-header">
+            <div>
+              <h2 class="drawer-title">{{ editingPatentId ? 'Edit Patent Filing' : 'Record Silicon Architecture Patent' }}</h2>
+              <p class="drawer-sub">Institutional intellectual property, hardware bypass theorems, and patent disclosures</p>
+            </div>
+            <button (click)="isPatentDrawerOpen = false" class="drawer-close-btn">✕</button>
+          </div>
+
+          <form [formGroup]="patentForm" (ngSubmit)="savePatent()" class="drawer-body">
+            <div class="form-section-card">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">Patent Number</label>
+                  <input type="text" formControlName="patentNumber" placeholder="e.g. US-11928492-B2" class="form-control font-mono" />
+                </div>
+                <div>
+                  <label class="form-label">Patent Status</label>
+                  <select formControlName="status" class="form-control">
+                    <option [ngValue]="0">Pending</option>
+                    <option [ngValue]="1">Granted</option>
+                    <option [ngValue]="2">Published</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="form-label">Patent Title</label>
+                <input type="text" formControlName="title" placeholder="e.g. Photonic Ring-0 Routing Core with Kaprekar Attractor Routing" class="form-control" />
+              </div>
+
+              <div>
+                <label class="form-label">Inventors & Authors</label>
+                <input type="text" formControlName="inventors" placeholder="Dr. Vance K. Thorne" class="form-control" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">Filing Date</label>
+                  <input type="date" formControlName="filingDate" class="form-control" />
+                </div>
+                <div>
+                  <label class="form-label">Grant Date (Optional)</label>
+                  <input type="date" formControlName="grantDate" class="form-control" />
+                </div>
+              </div>
+
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                  <label class="form-label" style="margin: 0;">Patent Document PDF</label>
+                  <input type="file" #patentFileInput (change)="uploadPatentDoc($event)" accept="application/pdf" style="display: none;" />
+                  <button
+                    type="button"
+                    (click)="patentFileInput.click()"
+                    [disabled]="isUploadingDoc()"
+                    class="text-xs font-mono text-accent2 hover:underline flex items-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>{{ isUploadingDoc() ? 'Uploading PDF...' : 'Upload PDF from PC' }}</span>
+                  </button>
+                </div>
+                <input type="text" formControlName="docUrl" placeholder="https://res.cloudinary.com/... or assets/docs/..." class="form-control font-mono text-xs" />
+              </div>
+
+              <div>
+                <label class="form-label">Patent Abstract</label>
+                <textarea rows="4" formControlName="abstract" placeholder="Detailed technical patent abstract and claim summary..." class="form-control form-textarea"></textarea>
+              </div>
+            </div>
+
+            <div class="drawer-footer" style="padding: 16px 0 0 0; margin-top: 8px;">
+              <button type="button" (click)="isPatentDrawerOpen = false" class="btn-secondary">Cancel</button>
+              <button type="submit" [disabled]="patentForm.invalid || isSaving()" class="btn-primary">
+                {{ editingPatentId ? 'Update Patent' : 'Record Patent' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Patent Modal -->
+      <div *ngIf="patentToDelete()" class="modal-backdrop" (click)="patentToDelete.set(null)">
+        <div class="modal-dialog" style="max-width: 440px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="color: #f87171;">Delete Patent Record?</h3>
+              <p class="modal-subtitle">Permanent removal from intellectual property portfolio</p>
+            </div>
+            <button (click)="patentToDelete.set(null)" class="drawer-close-btn">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 13.5px; color: var(--text2);">
+              Are you sure you want to permanently delete patent <strong style="color: var(--text);">"{{ patentToDelete()?.patentNumber }}"</strong>?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button (click)="patentToDelete.set(null)" class="btn-secondary">Cancel</button>
+            <button (click)="executeDeletePatent()" class="btn-danger">Delete Patent</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- SLIDE-OVER DRAWER: BENCHMARK RECORDER & EDITOR                            -->
+      <!-- ========================================================================= -->
+      <div *ngIf="isBenchmarkDrawerOpen" class="drawer-backdrop" (click)="isBenchmarkDrawerOpen = false">
+        <div class="drawer-panel" style="max-width: 600px;" (click)="$event.stopPropagation()">
+          <div class="drawer-header">
+            <div>
+              <h2 class="drawer-title">{{ editingBenchmarkId ? 'Edit Photonic Benchmark' : 'Register Photonic Benchmark' }}</h2>
+              <p class="drawer-sub">Experimental cluster validation logs, deterministic throughput, and latency bounds</p>
+            </div>
+            <button (click)="isBenchmarkDrawerOpen = false" class="drawer-close-btn">✕</button>
+          </div>
+
+          <form [formGroup]="benchmarkForm" (ngSubmit)="saveBenchmark()" class="drawer-body">
+            <div class="form-section-card">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">Subsystem Architecture</label>
+                  <input type="text" formControlName="subsystem" placeholder="e.g. Ring-0 Memory Bus" class="form-control" />
+                </div>
+                <div>
+                  <label class="form-label">Workload Type</label>
+                  <input type="text" formControlName="workloadType" placeholder="e.g. Constant-Entropy Matrix" class="form-control" />
+                </div>
+              </div>
+
+              <div>
+                <label class="form-label">Throughput (TPS)</label>
+                <input type="number" formControlName="throughputTps" placeholder="e.g. 850000000" class="form-control font-mono" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">P50 Latency (ms)</label>
+                  <input type="number" step="0.0001" formControlName="latencyP50Ms" placeholder="0.00042" class="form-control font-mono" />
+                </div>
+                <div>
+                  <label class="form-label">P99 Latency (ms)</label>
+                  <input type="number" step="0.0001" formControlName="latencyP99Ms" placeholder="0.00115" class="form-control font-mono" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">Invariance Cycles</label>
+                  <input type="number" formControlName="invarianceCycles" placeholder="7" class="form-control font-mono" />
+                </div>
+                <div>
+                  <label class="form-label">Reproducibility Repo URL</label>
+                  <input type="text" formControlName="reproducibilityRepoUrl" placeholder="https://github.com/4digitcore/benchmarks" class="form-control font-mono text-xs" />
+                </div>
+              </div>
+            </div>
+
+            <div class="drawer-footer" style="padding: 16px 0 0 0; margin-top: 8px;">
+              <button type="button" (click)="isBenchmarkDrawerOpen = false" class="btn-secondary">Cancel</button>
+              <button type="submit" [disabled]="benchmarkForm.invalid || isSaving()" class="btn-primary">
+                {{ editingBenchmarkId ? 'Update Benchmark' : 'Register Benchmark' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Benchmark Modal -->
+      <div *ngIf="benchmarkToDelete()" class="modal-backdrop" (click)="benchmarkToDelete.set(null)">
+        <div class="modal-dialog" style="max-width: 440px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="color: #f87171;">Delete Benchmark Record?</h3>
+              <p class="modal-subtitle">Permanent removal of cluster validation telemetry</p>
+            </div>
+            <button (click)="benchmarkToDelete.set(null)" class="drawer-close-btn">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 13.5px; color: var(--text2);">
+              Are you sure you want to delete benchmark for <strong style="color: var(--text);">"{{ benchmarkToDelete()?.subsystem }}"</strong> ({{ benchmarkToDelete()?.workloadType }})?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button (click)="benchmarkToDelete.set(null)" class="btn-secondary">Cancel</button>
+            <button (click)="executeDeleteBenchmark()" class="btn-danger">Delete Benchmark</button>
+          </div>
+        </div>
+      </div>
+
+    </div>

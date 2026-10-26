@@ -1,0 +1,448 @@
+<div class="space-y-6 fade-in">
+      
+      <!-- Page Header -->
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em;">Systems Academy & Fellowships</h1>
+            <span style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 20px;">
+              {{ cohorts().length }} {{ cohorts().length === 1 ? 'Cohort' : 'Cohorts' }}
+            </span>
+          </div>
+          <p style="font-size: 13px; color: var(--muted);">Manage curriculum cohorts, review student fellowship applications, and issue cryptographically verifiable credentials.</p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button 
+            type="button" 
+            (click)="loadData()" 
+            [disabled]="isLoading()"
+            class="btn-secondary">
+            <svg width="14" height="14" [class.animate-spin]="isLoading()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            <span>Refresh</span>
+          </button>
+
+          <button 
+            type="button" 
+            (click)="openCreateCohortDrawer()"
+            class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Create Cohort</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Navigation & Search Toolbar (Card Container) -->
+      <div class="card card-pad" style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+          
+          <!-- Tab Pills -->
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button 
+              type="button" 
+              (click)="activeTab.set('cohorts')"
+              [style.background]="activeTab() === 'cohorts' ? 'var(--accent)' : 'var(--surface2)'"
+              [style.color]="activeTab() === 'cohorts' ? '#fff' : 'var(--muted)'"
+              style="padding: 7px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+              <span>Cohorts ({{ cohorts().length }})</span>
+            </button>
+
+            <button 
+              type="button" 
+              (click)="activeTab.set('applications')"
+              [style.background]="activeTab() === 'applications' ? 'var(--accent)' : 'var(--surface2)'"
+              [style.color]="activeTab() === 'applications' ? '#fff' : 'var(--muted)'"
+              style="padding: 7px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span>Student Applications ({{ applications().length }})</span>
+            </button>
+
+            <button 
+              type="button" 
+              (click)="activeTab.set('certificates')"
+              [style.background]="activeTab() === 'certificates' ? 'var(--accent)' : 'var(--surface2)'"
+              [style.color]="activeTab() === 'certificates' ? '#fff' : 'var(--muted)'"
+              style="padding: 7px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+              </svg>
+              <span>Certifications ({{ certificates().length }})</span>
+            </button>
+          </div>
+
+          <!-- Search Input -->
+          <div style="position: relative; flex: 1; min-width: 240px; max-width: 320px;">
+            <svg width="15" height="15" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input 
+              type="text" 
+              [(ngModel)]="searchQuery"
+              placeholder="Search cohorts, students, credentials..."
+              style="width: 100%; padding: 8.5px 14px 8.5px 38px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13px; outline: none;"
+            />
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      @if (isLoading()) {
+        <div class="py-20 flex flex-col items-center justify-center gap-3">
+          <span class="material-symbols-outlined text-4xl animate-spin text-cyan-400">progress_activity</span>
+          <span class="text-xs font-mono" style="color: var(--muted);">Loading Academy Data...</span>
+        </div>
+      }
+
+      <!-- TAB 1: COHORTS -->
+      @if (!isLoading() && activeTab() === 'cohorts') {
+        @if (filteredCohorts().length === 0) {
+          <div class="empty-state-card">
+            <div class="empty-state-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+            </div>
+            <div class="empty-state-title">No Cohorts Found</div>
+            <p class="empty-state-desc">
+              No curriculum cohorts match your search. Create a new cohort to open enrollment for fellows.
+            </p>
+          </div>
+        } @else {
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 18px;">
+            @for (cohort of filteredCohorts(); track cohort.id) {
+              <div class="card" style="padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-radius: 14px; position: relative;">
+                
+                <div>
+                  <!-- Top Row: Status & Capacity -->
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <span [ngClass]="cohort.status === 'Enrolling' ? 'badge-live' : (cohort.status === 'In-Progress' ? 'badge-pending' : 'badge-draft')">
+                      <span class="pulse-dot" [style.background]="cohort.status === 'Enrolling' ? '#10b981' : (cohort.status === 'In-Progress' ? '#38bdf8' : '#71717a')"></span>
+                      <span>{{ cohort.status || 'Active' }}</span>
+                    </span>
+                    <span style="font-size: 11.5px; font-weight: 600; color: var(--muted); font-family: monospace; background: var(--surface2); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border);">
+                      Max {{ cohort.maxSeats }} Seats
+                    </span>
+                  </div>
+
+                  <!-- Cohort Title & Track Pill -->
+                  <h3 style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; line-height: 1.3;">
+                    {{ cohort.name }}
+                  </h3>
+                  
+                  <div style="margin-bottom: 16px;">
+                    <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: #38bdf8; background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(56, 189, 248, 0.28); padding: 3px 10px; border-radius: 8px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                      </svg>
+                      <span>{{ cohort.trackId || 'Quantum Kernel Systems' }}</span>
+                    </span>
+                  </div>
+
+                  <!-- Schedule Info Box -->
+                  <div style="padding: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <span style="color: var(--muted); display: inline-flex; align-items: center; gap: 5px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span>Admissions Deadline:</span>
+                      </span>
+                      <span style="font-family: monospace; font-weight: 600; color: var(--text);">
+                        {{ cohort.applicationDeadline | date:'mediumDate' }}
+                      </span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <span style="color: var(--muted); display: inline-flex; align-items: center; gap: 5px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        <span>Program Term:</span>
+                      </span>
+                      <span style="font-family: monospace; font-weight: 600; color: var(--text);">
+                        {{ cohort.startDate | date:'shortDate' }} - {{ cohort.endDate | date:'shortDate' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                  <button (click)="openEditCohortDrawer(cohort)" class="btn-action-edit">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    <span>Edit</span>
+                  </button>
+                  <button (click)="deleteCohort(cohort.id)" class="btn-action-delete" title="Delete Cohort">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                  </button>
+                </div>
+
+              </div>
+            }
+          </div>
+        }
+      }
+
+      <!-- TAB 2: APPLICATIONS -->
+      @if (!isLoading() && activeTab() === 'applications') {
+        <div class="card" style="overflow: hidden;">
+          @if (filteredApplications().length === 0) {
+            <div class="empty-state-card">
+              <div class="empty-state-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <div class="empty-state-title">No Student Applications</div>
+              <p class="empty-state-desc">
+                There are currently no candidate applications pending review for the selected curriculum criteria.
+              </p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr style="background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px;">
+                    <th style="padding: 12px 18px;">Candidate Name</th>
+                    <th style="padding: 12px 18px;">Email Address</th>
+                    <th style="padding: 12px 18px;">Target Cohort</th>
+                    <th style="padding: 12px 18px;">Review Status</th>
+                    <th style="padding: 12px 18px;">Applied Date</th>
+                    <th style="padding: 12px 18px; text-align: right;">Review Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-(--border-color)">
+                  @for (app of filteredApplications(); track app.id) {
+                    <tr class="hover:bg-slate-800/10 transition-colors">
+                      <td style="padding: 14px 18px; font-weight: 700; color: var(--text);">
+                        {{ app.studentName }}
+                      </td>
+                      <td style="padding: 14px 18px; font-family: monospace; font-size: 12px; color: var(--accent);">
+                        {{ app.email }}
+                      </td>
+                      <td style="padding: 14px 18px; color: var(--text2);">
+                        {{ app.cohortName || 'General Fellowship' }}
+                      </td>
+                      <td style="padding: 14px 18px;">
+                        <span class="badge-pending">
+                          {{ app.status }}
+                        </span>
+                      </td>
+                      <td style="padding: 14px 18px; font-family: monospace; font-size: 11.5px; color: var(--muted);">
+                        {{ app.appliedAt | date:'mediumDate' }}
+                      </td>
+                      <td style="padding: 14px 18px; text-align: right;">
+                        <select 
+                          [ngModel]="app.status" 
+                          (ngModelChange)="onUpdateStatus(app.id, $event)"
+                          class="form-select"
+                          style="display: inline-block; width: auto; padding: 5px 10px; font-size: 12px;">
+                          <option value="Submitted">Submitted</option>
+                          <option value="UnderReview">Under Review</option>
+                          <option value="Accepted">Accepted</option>
+                          <option value="Rejected">Rejected</option>
+                        </select>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- TAB 3: CERTIFICATES -->
+      @if (!isLoading() && activeTab() === 'certificates') {
+        <div class="card" style="overflow: hidden;">
+          @if (filteredCertificates().length === 0) {
+            <div class="empty-state-card">
+              <div class="empty-state-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                </svg>
+              </div>
+              <div class="empty-state-title">No Certifications Issued</div>
+              <p class="empty-state-desc">
+                Cryptographically verifiable graduate credentials and fellowship diplomas will be indexed here.
+              </p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr style="background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px;">
+                    <th style="padding: 12px 18px;">Credential Code</th>
+                    <th style="padding: 12px 18px;">Recipient</th>
+                    <th style="padding: 12px 18px;">Specialization Track</th>
+                    <th style="padding: 12px 18px;">Cryptographic Hash</th>
+                    <th style="padding: 12px 18px;">Issued Date</th>
+                    <th style="padding: 12px 18px; text-align: right;">Verification</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-(--border-color)">
+                  @for (cert of filteredCertificates(); track cert.id) {
+                    <tr class="hover:bg-slate-800/10 transition-colors">
+                      <td style="padding: 14px 18px; font-family: monospace; font-weight: 700; color: var(--accent);">
+                        {{ cert.certCode }}
+                      </td>
+                      <td style="padding: 14px 18px; font-weight: 700; color: var(--text);">
+                        {{ cert.recipientName }}
+                      </td>
+                      <td style="padding: 14px 18px; color: var(--text2);">
+                        {{ cert.trackName }}
+                      </td>
+                      <td style="padding: 14px 18px; font-family: monospace; font-size: 11px; color: var(--muted); max-width: 200px;" class="truncate">
+                        {{ cert.sha256Hash }}
+                      </td>
+                      <td style="padding: 14px 18px; font-family: monospace; font-size: 11.5px; color: var(--muted);">
+                        {{ cert.issuedAt | date:'mediumDate' }}
+                      </td>
+                      <td style="padding: 14px 18px; text-align: right;">
+                        <a [href]="cert.verificationUrl || '/certificates/' + cert.certCode" target="_blank"
+                          class="btn-action-view inline-flex">
+                          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          <span>Verify</span>
+                        </a>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- COHORT DRAWER -->
+      @if (isCohortDrawerOpen()) {
+        <div class="drawer-backdrop" (click)="closeCohortDrawer()">
+          <div class="drawer-panel" (click)="$event.stopPropagation()">
+            
+            <!-- Drawer Header -->
+            <div class="drawer-header">
+              <div>
+                <h2 class="drawer-title">
+                  {{ isEditingCohort() ? 'Edit Academy Cohort' : 'Create Academy Cohort' }}
+                </h2>
+                <p class="drawer-sub">Configure cohort curriculum track, schedule milestones, and seating capacity</p>
+              </div>
+              <button type="button" (click)="closeCohortDrawer()" class="drawer-close-btn" title="Close Drawer">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Drawer Form -->
+            <form [formGroup]="cohortForm" (ngSubmit)="saveCohort()" class="drawer-body">
+              
+              <!-- Section 1: Curriculum & Track Identity -->
+              <div class="form-section-card">
+                <div class="form-section-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                  </svg>
+                  <span>Curriculum & Program Identity</span>
+                </div>
+                <div class="space-y-4">
+                  <div>
+                    <label class="form-label">Cohort Program Title</label>
+                    <input type="text" formControlName="name" placeholder="e.g. Cohort Alpha 2026 - Systems Architecture" class="form-control" />
+                  </div>
+
+                  <div>
+                    <label class="form-label">Curriculum Track / Specialization</label>
+                    <input type="text" formControlName="trackId" placeholder="e.g. Quantum Kernel Systems" class="form-control" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 2: Program Schedule & Milestones -->
+              <div class="form-section-card">
+                <div class="form-section-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                  <span>Schedule & Admission Windows</span>
+                </div>
+                <div class="space-y-4">
+                  <div>
+                    <label class="form-label">Application Deadline</label>
+                    <input type="date" formControlName="applicationDeadline" class="form-control" />
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="form-label">Term Start Date</label>
+                      <input type="date" formControlName="startDate" class="form-control" />
+                    </div>
+                    <div>
+                      <label class="form-label">Term End Date</label>
+                      <input type="date" formControlName="endDate" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 3: Capacity & Enrolment State -->
+              <div class="form-section-card">
+                <div class="form-section-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                  <span>Capacity & Admission Status</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="form-label">Maximum Fellow Seats</label>
+                    <input type="number" formControlName="maxSeats" min="1" max="500" class="form-control" />
+                  </div>
+                  <div>
+                    <label class="form-label">Enrolment Status</label>
+                    <select formControlName="status" class="form-select">
+                      <option value="Enrolling">Enrolling (Open)</option>
+                      <option value="In-Progress">In-Progress (Active)</option>
+                      <option value="Completed">Completed (Archived)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Drawer Footer -->
+              <div class="drawer-footer">
+                <button type="button" (click)="closeCohortDrawer()" class="btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" [disabled]="cohortForm.invalid" class="btn-primary">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+                  </svg>
+                  <span>{{ isEditingCohort() ? 'Update Cohort' : 'Publish Cohort' }}</span>
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      }
+
+    </div>

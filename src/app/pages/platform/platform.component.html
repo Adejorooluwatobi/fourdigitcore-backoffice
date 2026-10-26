@@ -1,0 +1,773 @@
+<div class="space-y-6 fade-in">
+      
+      <!-- Page Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--info-box-bg); border: 1px solid var(--info-box-border); display: flex; align-items: center; justify-content: center; color: var(--accent2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+          </div>
+          <div>
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em;">Platform & Index CMS</h1>
+            <p style="font-size: 13px; color: var(--muted);">Direct control plane for the public homepage (index.html), architecture pillars, and SDK showcase.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <a href="http://localhost:5000" target="_blank" class="btn-secondary" style="font-size: 12.5px; padding: 8px 14px; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Preview Landing Page</span>
+          </a>
+          <button (click)="loadAllData()" class="btn-secondary" style="font-size: 12.5px; padding: 8px 14px;" [disabled]="isLoading()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.animate-spin]="isLoading()">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Sync Content</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Segmented Control Tab Navigation -->
+      <div style="display: flex; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 2px;">
+        <button 
+          (click)="activeTab.set('hero')" 
+          [class.active-tab]="activeTab() === 'hero'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>Hero & Telemetry HUD</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('pillars')" 
+          [class.active-tab]="activeTab() === 'pillars'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          <span>Architecture Pillars ({{ pillars().length }})</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('quote-callout')" 
+          [class.active-tab]="activeTab() === 'quote-callout'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
+          <span>Quotes & Closing Callout</span>
+        </button>
+
+        <button 
+          (click)="activeTab.set('sdk')" 
+          [class.active-tab]="activeTab() === 'sdk'"
+          class="tab-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span>Developer SDK Showcase</span>
+        </button>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 1: HERO & TELEMETRY HUD                                              -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'hero'" class="space-y-6">
+        <form [formGroup]="heroForm" (ngSubmit)="saveHero()" class="space-y-6">
+          
+          <!-- Core Messaging Card -->
+          <div class="card card-pad space-y-4">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Main Hero Messaging & Routing</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="md:col-span-3">
+                <label class="form-label">Hero Badge Text</label>
+                <input type="text" formControlName="badgeText" placeholder="e.g. COMPUTATIONAL INVARIANCE // 6174" class="form-control" />
+              </div>
+
+              <div class="md:col-span-3">
+                <label class="form-label">Headline</label>
+                <input type="text" formControlName="headline" placeholder="Architecting Mathematical Determinism at Infinite Scale." class="form-control" />
+              </div>
+
+              <div class="md:col-span-3">
+                <label class="form-label">Subheadline Narrative</label>
+                <textarea rows="3" formControlName="subheadline" class="form-control form-textarea" placeholder="Explain the computational foundation..."></textarea>
+              </div>
+
+              <div>
+                <label class="form-label">Primary CTA Label</label>
+                <input type="text" formControlName="primaryCtaText" placeholder="Deploy Architecture →" class="form-control" />
+              </div>
+
+              <div>
+                <label class="form-label">Primary CTA URL</label>
+                <input type="text" formControlName="primaryCtaUrl" placeholder="contact.html" class="form-control font-mono" />
+              </div>
+
+              <div>
+                <label class="form-label">Secondary CTA Label</label>
+                <input type="text" formControlName="secondaryCtaText" placeholder="Inspect Kernels" class="form-control" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="form-label">Secondary CTA URL</label>
+                <input type="text" formControlName="secondaryCtaUrl" placeholder="#strata" class="form-control font-mono" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Telemetry HUD Metrics Card -->
+          <div class="card card-pad space-y-4">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+              <span>Real-Time Telemetry HUD Tickers (Rendered on Hero)</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Metric 1: Latency Ceiling -->
+              <div class="stat-metric-card group" style="border-bottom-color: #38bdf8;">
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="text-[11px] font-mono font-bold tracking-wider" style="color: var(--accent2);">TICKER 01: LATENCY</span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Active Telemetry Signal"></span>
+                </div>
+                <div class="space-y-2.5">
+                  <div>
+                    <label class="form-label text-[11px]">Value</label>
+                    <input type="text" formControlName="latencyCeilingValue" placeholder="e.g. < 0.18ms" class="form-control font-mono font-bold text-sm" />
+                  </div>
+                  <div>
+                    <label class="form-label text-[11px]">Label</label>
+                    <input type="text" formControlName="latencyCeilingLabel" placeholder="e.g. LATENCY CEILING" class="form-control text-xs uppercase" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Metric 2: State Model -->
+              <div class="stat-metric-card group" style="border-bottom-color: #00f2fe;">
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="text-[11px] font-mono font-bold tracking-wider" style="color: #00f2fe;">TICKER 02: MODEL</span>
+                  <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" title="Active State Invariant"></span>
+                </div>
+                <div class="space-y-2.5">
+                  <div>
+                    <label class="form-label text-[11px]">Value</label>
+                    <input type="text" formControlName="stateModelValue" placeholder="e.g. Kaprekar 6174" class="form-control font-mono font-bold text-sm" />
+                  </div>
+                  <div>
+                    <label class="form-label text-[11px]">Label</label>
+                    <input type="text" formControlName="stateModelLabel" placeholder="e.g. STATE MODEL" class="form-control text-xs uppercase" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Metric 3: Enclave Security -->
+              <div class="stat-metric-card group" style="border-bottom-color: #10b981;">
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="text-[11px] font-mono font-bold tracking-wider" style="color: #10b981;">TICKER 03: SECURITY</span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Hardware Attestation Verified"></span>
+                </div>
+                <div class="space-y-2.5">
+                  <div>
+                    <label class="form-label text-[11px]">Value</label>
+                    <input type="text" formControlName="enclaveSecurityValue" placeholder="e.g. FIPS 140-3 L4" class="form-control font-mono font-bold text-sm" />
+                  </div>
+                  <div>
+                    <label class="form-label text-[11px]">Label</label>
+                    <input type="text" formControlName="enclaveSecurityLabel" placeholder="e.g. ENCLAVE SECURITY" class="form-control text-xs uppercase" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div style="display: flex; justify-content: flex-end; padding-top: 10px;">
+              <button type="submit" [disabled]="isSaving()" class="btn-primary" style="padding: 10px 24px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span>Save Hero & HUD Changes</span>
+              </button>
+            </div>
+          </div>
+
+        </form>
+
+        <!-- Hero Slides Gallery with Visible Cloudinary Images -->
+        <div class="card card-pad space-y-4">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span>Hero Background Graphic Slides ({{ slides().length }})</span>
+            </div>
+            <button (click)="openAddSlideModal()" class="btn-primary" style="font-size: 12px; padding: 6px 14px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Add Slide from PC</span>
+            </button>
+          </div>
+
+          <div *ngIf="slides().length > 0; else noSlides" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div *ngFor="let s of slides()" class="p-3.5 rounded-xl border space-y-3 relative group transition-all duration-200" style="background: var(--surface2); border-color: var(--border);">
+              <!-- Live Image In Use Preview -->
+              <div class="w-full h-36 rounded-lg overflow-hidden border border-border bg-surface relative flex items-center justify-center">
+                <img 
+                  [src]="mediaService.resolveUrl(s.imageUrl)" 
+                  [alt]="s.altText || 'Hero slide graphic'"
+                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  (error)="$event.target.style.display='none'" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+                <span class="absolute top-2 left-2 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full"
+                  style="background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); color: var(--accent2); border: 1px solid rgba(56, 189, 248, 0.3);">
+                  Slide #{{ s.sortOrder }}
+                </span>
+                <span *ngIf="s.imageUrl.includes('cloudinary.com')" class="absolute top-2 right-2 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded"
+                  style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);">
+                  Cloudinary CDN
+                </span>
+              </div>
+
+              <!-- Slide Metadata & Delete Control -->
+              <div class="space-y-1">
+                <div class="text-xs font-bold text-text truncate" [title]="s.altText">
+                  {{ s.altText || 'Hero Slide Visual Graphic' }}
+                </div>
+                <div class="text-[11px] font-mono text-muted truncate" [title]="s.imageUrl">
+                  {{ s.imageUrl }}
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-1 border-t border-border">
+                <span class="text-[10.5px] font-mono text-muted">Order: {{ s.sortOrder }}</span>
+                <button 
+                  type="button" 
+                  (click)="deleteSlide(s.id)" 
+                  class="btn-action-delete" 
+                  title="Remove Slide">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                  <span>Remove</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <ng-template #noSlides>
+            <div class="empty-state-card" style="padding: 24px;">
+              <p style="font-size: 13px; color: var(--muted);">No background slides uploaded yet. The default SVG geometric canvas will be utilized.</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 2: ARCHITECTURE PILLARS                                              -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'pillars'" class="space-y-4">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <p style="font-size: 13px; color: var(--muted);">Foundational architectural strata configured for the 6174 Attractor Kernel platform.</p>
+          <button (click)="openPillarDrawer()" class="btn-primary" style="font-size: 12.5px; padding: 8px 14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Create New Pillar</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let p of pillars()" class="card card-pad flex flex-col justify-between" style="gap: 16px;">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 11px; font-weight: 800; font-family: monospace; color: var(--accent2); background: var(--info-box-bg); border: 1px solid var(--info-box-border); padding: 3px 8px; border-radius: 6px;">
+                  STRATA {{ p.layerNumber }}
+                </span>
+                <span style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">
+                  {{ p.badgeText }}
+                </span>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px;">{{ p.title }}</h3>
+              <p style="font-size: 12.5px; color: var(--text2); line-height: 1.5; margin-bottom: 12px;">{{ p.description }}</p>
+
+              <!-- Specs -->
+              <div *ngIf="p.specs && p.specs.length > 0" class="space-y-1 mb-3">
+                <div style="font-size: 10.5px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Specifications</div>
+                <div *ngFor="let s of p.specs" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text);">
+                  <span style="color: var(--accent2); font-weight: bold;">•</span>
+                  <span>{{ s.specText }}</span>
+                </div>
+              </div>
+
+              <!-- Applications Tags -->
+              <div *ngIf="p.applications && p.applications.length > 0" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <span *ngFor="let a of p.applications" style="font-size: 11px; padding: 3px 8px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2);">
+                  {{ a.applicationName }}
+                </span>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px;">
+              <button (click)="openPillarDrawer(p)" class="btn-secondary" style="font-size: 12px; padding: 6px 12px;">Edit Pillar</button>
+              <button (click)="confirmDeletePillar(p)" class="btn-action-delete" title="Delete Pillar">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 3: QUOTES & CLOSING CALLOUT                                          -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'quote-callout'" class="space-y-6">
+        <!-- Quote Section -->
+        <form [formGroup]="quoteForm" (ngSubmit)="saveQuote()" class="card card-pad space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
+            <span>Homepage Pull Quote & Philosophical Invariance</span>
+          </div>
+
+          <div>
+            <label class="form-label">Quote Statement</label>
+            <textarea rows="3" formControlName="quoteText" class="form-control form-textarea" placeholder="Enter philosophical quote statement..."></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Attribution / Speaker</label>
+              <input type="text" formControlName="attribution" placeholder="e.g. KAPREKAR 6174 PRINCIPLE" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Highlighted Invariant Term</label>
+              <input type="text" formControlName="invariantTerm" placeholder="e.g. invariant core" class="form-control" />
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" [disabled]="isSaving()" class="btn-primary">Save Quote</button>
+          </div>
+        </form>
+
+        <!-- Closing Callout -->
+        <form [formGroup]="calloutForm" (ngSubmit)="saveCallout()" class="card card-pad space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>Bottom CTA Closing Banner</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">Badge Label</label>
+              <input type="text" formControlName="badgeText" placeholder="e.g. ENTERPRISE DEPLOYMENTS" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Banner Headline</label>
+              <input type="text" formControlName="title" placeholder="Have an infrastructure challenge worth solving?" class="form-control" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="form-label">Description Body</label>
+              <textarea rows="3" formControlName="description" class="form-control form-textarea"></textarea>
+            </div>
+            <div>
+              <label class="form-label">Primary CTA Label</label>
+              <input type="text" formControlName="primaryCtaText" placeholder="Launch Console →" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Primary CTA URL</label>
+              <input type="text" formControlName="primaryCtaUrl" placeholder="contact.html" class="form-control font-mono" />
+            </div>
+            <div>
+              <label class="form-label">Secondary CTA Label</label>
+              <input type="text" formControlName="secondaryCtaText" placeholder="Read Whitepaper" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Secondary CTA URL</label>
+              <input type="text" formControlName="secondaryCtaUrl" placeholder="innovation.html" class="form-control font-mono" />
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" [disabled]="isSaving()" class="btn-primary">Save Closing Banner</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- TAB 4: DEVELOPER SDK SHOWCASE                                            -->
+      <!-- ========================================================================= -->
+      <div *ngIf="activeTab() === 'sdk'" class="space-y-6">
+        <!-- SDK Overview Banner -->
+        <div class="card card-pad space-y-4">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span>SDK Showcase Global Headline & Metadata</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="form-label">Badge Label</label>
+              <input type="text" [(ngModel)]="sdkSectionData.badgeText" placeholder="04 // DEVELOPER ECOSYSTEM" class="form-control" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="form-label">Showcase Title</label>
+              <input type="text" [(ngModel)]="sdkSectionData.title" placeholder="Native SDKs for Ultra-Low Latency" class="form-control" />
+            </div>
+            <div class="sm:col-span-3">
+              <label class="form-label">Showcase Description</label>
+              <textarea rows="2" [(ngModel)]="sdkSectionData.description" class="form-control form-textarea"></textarea>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button (click)="saveSdkSection()" class="btn-primary" [disabled]="isSaving()">Update Section Header</button>
+          </div>
+        </div>
+
+        <!-- SDK Snippets Management -->
+        <div class="card card-pad space-y-4">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Configured Language Snippets ({{ sdkSnippets().length }})</span>
+            </div>
+            <button (click)="openAddSnippetModal()" class="btn-primary" style="font-size: 12px; padding: 6px 14px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Add Snippet</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div *ngFor="let snip of sdkSnippets()" class="p-4 rounded-xl border space-y-3" style="background: var(--surface2); border-color: var(--border);">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 12px; font-weight: 800; font-family: monospace; color: var(--accent2);">{{ snip.languageKey.toUpperCase() }}</span>
+                  <span style="font-size: 11px; color: var(--muted);">{{ snip.fileName }}</span>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <button (click)="openEditSnippetModal(snip)" class="btn-secondary" style="font-size: 11px; padding: 4px 10px;">Edit</button>
+                  <button (click)="deleteSnippet(snip.id)" class="btn-action-delete" title="Delete">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tags -->
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; font-family: monospace;">
+                <span class="tag-pill" style="font-size: 10.5px;">{{ snip.bindingTag }}</span>
+                <span class="tag-pill" style="font-size: 10.5px;">{{ snip.packageTag }}</span>
+                <span class="tag-pill" style="font-size: 10.5px;">{{ snip.memoryTag }}</span>
+              </div>
+
+              <!-- Code Preview -->
+              <pre class="p-3 rounded-lg border text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-36" style="background: var(--surface); border-color: var(--border); color: var(--text);">{{ snip.codeContent }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- SLIDE-OVER DRAWER: PILLAR EDITOR                                         -->
+      <!-- ========================================================================= -->
+      <div *ngIf="isPillarDrawerOpen()" class="drawer-backdrop" (click)="closePillarDrawer()">
+        <div class="drawer-panel" style="max-width: 600px;" (click)="$event.stopPropagation()">
+          <div class="drawer-header">
+            <div>
+              <h2 class="drawer-title">{{ editingPillarId ? 'Edit Architecture Pillar' : 'Create Architecture Pillar' }}</h2>
+              <p class="drawer-sub">Define layer hierarchy, kernel capabilities, and target industry applications</p>
+            </div>
+            <button (click)="closePillarDrawer()" class="drawer-close-btn" title="Close Drawer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+
+          <form [formGroup]="pillarForm" (ngSubmit)="savePillar()" class="drawer-body">
+            <!-- Strata Layer -->
+            <div class="form-section-card">
+              <span class="form-section-title">Strata Identity</span>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">Layer Number</label>
+                  <input type="text" formControlName="layerNumber" placeholder="e.g. 01" class="form-control font-mono" />
+                </div>
+                <div>
+                  <label class="form-label">Badge Label</label>
+                  <input type="text" formControlName="badgeText" placeholder="e.g. HARDWARE ENCLAVES" class="form-control" />
+                </div>
+              </div>
+              <div>
+                <label class="form-label">Title</label>
+                <input type="text" formControlName="title" placeholder="e.g. Silicon-Rooted Enclaves" class="form-control" />
+              </div>
+              <div>
+                <label class="form-label">Architecture Description</label>
+                <textarea rows="3" formControlName="description" class="form-control form-textarea" placeholder="Explain the strata responsibilities..."></textarea>
+              </div>
+            </div>
+
+            <!-- Specs -->
+            <div class="form-section-card">
+              <span class="form-section-title">Technical Specifications ({{ pillarSpecsList.length }})</span>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" [(ngModel)]="newPillarSpecInput" [ngModelOptions]="{standalone: true}" (keyup.enter)="addPillarSpec()" placeholder="e.g. Zero-copy ring buffer" class="form-control flex-1" />
+                <button type="button" (click)="addPillarSpec()" class="btn-secondary" style="padding: 7px 14px;">Add</button>
+              </div>
+              <div *ngIf="pillarSpecsList.length > 0" class="space-y-1.5 max-h-32 overflow-y-auto">
+                <div *ngFor="let s of pillarSpecsList; let idx = index" class="p-2 rounded-lg border text-xs flex justify-between items-center" style="background: var(--surface2); border-color: var(--border);">
+                  <span style="color: var(--text);">{{ s }}</span>
+                  <button type="button" (click)="removePillarSpec(idx)" style="color: #f87171; background: none; border: none; cursor: pointer;">✕</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Applications -->
+            <div class="form-section-card">
+              <span class="form-section-title">Target Industry Applications ({{ pillarAppsList.length }})</span>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" [(ngModel)]="newPillarAppInput" [ngModelOptions]="{standalone: true}" (keyup.enter)="addPillarApp()" placeholder="e.g. Sovereign Banking Enclaves" class="form-control flex-1" />
+                <button type="button" (click)="addPillarApp()" class="btn-secondary" style="padding: 7px 14px;">Add</button>
+              </div>
+              <div *ngIf="pillarAppsList.length > 0" class="flex flex-wrap gap-2 max-h-28 overflow-y-auto">
+                <span *ngFor="let a of pillarAppsList; let idx = index" class="tag-pill" style="gap: 6px;">
+                  <span>{{ a }}</span>
+                  <button type="button" (click)="removePillarApp(idx)" style="color: #f87171; background: none; border: none; cursor: pointer;">✕</button>
+                </span>
+              </div>
+            </div>
+
+            <div class="drawer-footer" style="padding: 16px 0 0 0; margin-top: 8px;">
+              <button type="button" (click)="closePillarDrawer()" class="btn-secondary">Cancel</button>
+              <button type="submit" [disabled]="pillarForm.invalid || isSaving()" class="btn-primary">
+                {{ editingPillarId ? 'Update Pillar' : 'Save Pillar' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Pillar Confirmation Modal -->
+      <div *ngIf="pillarToDelete" class="modal-backdrop" (click)="pillarToDelete = null">
+        <div class="modal-dialog" style="max-width: 440px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="color: #f87171;">Delete Architecture Pillar?</h3>
+              <p class="modal-subtitle">Permanent removal of strata layer</p>
+            </div>
+            <button (click)="pillarToDelete = null" class="drawer-close-btn">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 13.5px; color: var(--text2);">
+              Are you sure you want to delete pillar <strong style="color: var(--text);">"{{ pillarToDelete.title }}"</strong>?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button (click)="pillarToDelete = null" class="btn-secondary">Cancel</button>
+            <button (click)="executeDeletePillar()" class="btn-danger">Delete Permanently</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Slide Modal (with Cloudinary PC Image Uploader) -->
+      <div *ngIf="isSlideModalOpen" class="modal-backdrop" (click)="isSlideModalOpen = false">
+        <div class="modal-dialog" style="max-width: 520px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title">Add Background Slide</h3>
+              <p class="modal-subtitle">Upload image directly from your PC to Cloudinary CDN</p>
+            </div>
+            <button (click)="isSlideModalOpen = false" class="drawer-close-btn">✕</button>
+          </div>
+          <div class="modal-body space-y-4">
+            <!-- Cloudinary PC Image Uploader -->
+            <app-image-uploader 
+              [(imageUrl)]="newSlideData.imageUrl" 
+              label="Background Slide Asset" 
+              folder="fourdigitcore/slides"
+              previewShape="banner"
+              [required]="true">
+            </app-image-uploader>
+
+            <div>
+              <label class="form-label">Alt Description</label>
+              <input type="text" [(ngModel)]="newSlideData.altText" placeholder="e.g. Kaprekar Invariant Convergence Mesh" class="form-control" />
+            </div>
+            <div>
+              <label class="form-label">Sort Order</label>
+              <input type="number" [(ngModel)]="newSlideData.sortOrder" placeholder="1" class="form-control font-mono" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button (click)="isSlideModalOpen = false" class="btn-secondary">Cancel</button>
+            <button (click)="saveSlide()" [disabled]="!newSlideData.imageUrl || isSaving()" class="btn-primary">Add Slide</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Snippet Editor Modal (Add & Edit Code Snippets) -->
+      <div *ngIf="isSnippetModalOpen()" class="modal-backdrop" (click)="isSnippetModalOpen.set(false)">
+        <div class="modal-dialog" style="max-width: 680px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title">{{ editingSnippetId() ? 'Edit Code Snippet' : 'Add Language Snippet' }}</h3>
+              <p class="modal-subtitle">Configure native client SDK syntax, kernel bindings, and microbenchmarks</p>
+            </div>
+            <button (click)="isSnippetModalOpen.set(false)" class="drawer-close-btn">✕</button>
+          </div>
+
+          <form [formGroup]="snippetForm" (ngSubmit)="saveSnippet()">
+            <div class="modal-body space-y-4 max-h-[75vh] overflow-y-auto">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="sm:col-span-2">
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="form-label mb-0">Language Key <span class="text-rose-500">*</span></label>
+                    <span class="text-[11px] text-muted">Type any language identifier or pick a preset chip below</span>
+                  </div>
+                  <div class="relative">
+                    <input 
+                      type="text" 
+                      formControlName="languageKey" 
+                      (input)="onLanguageKeyInput($event)"
+                      list="sdkLanguageSuggestions" 
+                      placeholder="e.g. rust, python, zig, swift, kotlin, java, cpp, mojo, solidity..." 
+                      class="form-control font-mono" />
+                    <datalist id="sdkLanguageSuggestions">
+                      <option *ngFor="let p of languagePresets" [value]="p.key">{{ p.name }} (.{{ p.ext }})</option>
+                      <option value="javascript">JavaScript (.js)</option>
+                      <option value="scala">Scala (.scala)</option>
+                      <option value="elixir">Elixir (.ex)</option>
+                      <option value="ruby">Ruby (.rb)</option>
+                      <option value="dart">Dart (.dart)</option>
+                      <option value="lua">Lua (.lua)</option>
+                      <option value="julia">Julia (.jl)</option>
+                      <option value="mojo">Mojo (.mojo)</option>
+                      <option value="solidity">Solidity (.sol)</option>
+                      <option value="haskell">Haskell (.hs)</option>
+                      <option value="c">C (.c)</option>
+                      <option value="bash">Bash (.sh)</option>
+                    </datalist>
+                  </div>
+
+                  <!-- Quick Selection Preset Chips -->
+                  <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                    <span class="text-[10px] uppercase font-mono text-muted mr-1">Presets:</span>
+                    <button 
+                      type="button" 
+                      *ngFor="let p of languagePresets" 
+                      (click)="applyLanguagePreset(p)" 
+                      [class.active-pill]="snippetForm.get('languageKey')?.value?.toLowerCase() === p.key"
+                      class="preset-chip">
+                      {{ p.key }}
+                    </button>
+                    <button 
+                      type="button" 
+                      (click)="resetToCustomLanguage()" 
+                      class="preset-chip preset-chip-custom" 
+                      title="Clear fields for custom language">
+                      + Custom / Clear
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="form-label">File Name <span class="text-rose-500">*</span></label>
+                  <input type="text" formControlName="fileName" placeholder="e.g. cluster_init.rs" class="form-control font-mono" />
+                </div>
+                <div>
+                  <label class="form-label">Category Slug <span class="text-rose-500">*</span></label>
+                  <input type="text" formControlName="categorySlug" list="categorySuggestions" placeholder="systems" class="form-control font-mono" />
+                  <datalist id="categorySuggestions">
+                    <option *ngFor="let cat of sdkCategories()" [value]="cat.slug">{{ cat.name }}</option>
+                    <option value="systems">systems</option>
+                    <option value="backend">backend</option>
+                    <option value="runtime">runtime</option>
+                    <option value="cloud">cloud</option>
+                  </datalist>
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="form-label">Display Name <span class="text-rose-500">*</span></label>
+                  <input type="text" formControlName="displayName" placeholder="e.g. Rust (Async Kernel Binding)" class="form-control" />
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="form-label">Sort Order</label>
+                  <input type="number" formControlName="sortOrder" placeholder="1" class="form-control font-mono" />
+                </div>
+              </div>
+
+              <!-- Metric Badges / Tags -->
+              <div class="p-3.5 rounded-xl border border-border bg-surface space-y-3">
+                <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-accent2 flex items-center gap-1.5">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                  <span>Telemetry & Packaging Tags</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="form-label text-[11px]">Binding Description</label>
+                    <input type="text" formControlName="bindingTag" placeholder="e.g. immutable kernel binding" class="form-control text-xs" />
+                  </div>
+                  <div>
+                    <label class="form-label text-[11px]">Package Identifier</label>
+                    <input type="text" formControlName="packageTag" placeholder="e.g. CRATE: fourdigitcore-v4.8" class="form-control font-mono text-xs" />
+                  </div>
+                  <div>
+                    <label class="form-label text-[11px]">Memory Footprint</label>
+                    <input type="text" formControlName="memoryTag" placeholder="e.g. MEM: < 3.8 MB" class="form-control font-mono text-xs" />
+                  </div>
+                  <div>
+                    <label class="form-label text-[11px]">Concurrency Model</label>
+                    <input type="text" formControlName="threadsTag" placeholder="e.g. THREADS: lock-free" class="form-control font-mono text-xs" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Code Content Textarea with Paste & Quick Actions -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="flex items-center gap-2">
+                    <label class="form-label mb-0">Code Content <span class="text-rose-500">*</span></label>
+                    <span class="text-[10px] font-mono text-muted">JetBrains Mono</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <button 
+                      type="button" 
+                      (click)="pasteCodeFromClipboard()" 
+                      class="code-toolbar-btn"
+                      title="Paste snippet code directly from your system clipboard">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                      <span>Paste Clipboard</span>
+                    </button>
+                    <button 
+                      type="button" 
+                      (click)="insertSampleCode()" 
+                      class="code-toolbar-btn"
+                      title="Insert starter boilerplate for the selected language">
+                      <span>Insert Sample</span>
+                    </button>
+                    <button 
+                      type="button" 
+                      (click)="clearCodeContent()" 
+                      *ngIf="snippetForm.get('codeContent')?.value"
+                      class="code-toolbar-btn hover:text-rose-400"
+                      title="Clear code area">
+                      Clear
+                    </button>
+                  </div>
+                </div>
+                <textarea 
+                  rows="10" 
+                  formControlName="codeContent" 
+                  placeholder="// Paste your production SDK code or client snippet here..." 
+                  class="form-control font-mono text-xs bg-slate-950 text-sky-200 border-border-light leading-relaxed focus:ring-1 focus:ring-accent"></textarea>
+                <div class="flex items-center justify-between mt-1 text-[11px] text-muted">
+                  <span>Paste any language snippet code directly into the editor above.</span>
+                  <span class="font-mono">{{ snippetForm.get('codeContent')?.value?.length || 0 }} chars</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" (click)="isSnippetModalOpen.set(false)" class="btn-secondary">Cancel</button>
+              <button type="submit" [disabled]="snippetForm.invalid || isSaving()" class="btn-primary">
+                {{ editingSnippetId() ? 'Save Changes' : 'Create Snippet' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>

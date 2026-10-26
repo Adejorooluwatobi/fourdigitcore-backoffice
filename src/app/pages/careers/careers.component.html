@@ -1,0 +1,781 @@
+<div class="space-y-6 fade-in">
+      <!-- Page Header -->
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.02em;">Careers & Talent Pipeline</h1>
+            <span style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 20px;">
+              {{ jobs().length }} Openings
+            </span>
+            <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 20px;">
+              {{ applications().length }} Candidates
+            </span>
+          </div>
+          <p style="font-size: 13px; color: var(--muted);">Manage high-concurrency kernel engineer positions, review applicant portfolios, and schedule ring-0 technical interviews.</p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <!-- Refresh -->
+          <button
+            (click)="refreshData()"
+            [disabled]="loading()"
+            class="btn-secondary">
+            <svg width="14" height="14" [class.animate-spin]="loading()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            <span>Refresh</span>
+          </button>
+
+          <!-- New Job Button -->
+          <button
+            *ngIf="activeTab() === 'jobs'"
+            (click)="openJobDrawer()"
+            class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Post New Role</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs & View Switcher (Card Container) -->
+      <div class="card card-pad" style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button
+              (click)="activeTab.set('jobs')"
+              [style.background]="activeTab() === 'jobs' ? 'var(--accent)' : 'var(--surface2)'"
+              [style.color]="activeTab() === 'jobs' ? '#fff' : 'var(--muted)'"
+              style="padding: 7px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <span>Engineering Roles ({{ jobs().length }})</span>
+            </button>
+
+            <button
+              (click)="activeTab.set('ats')"
+              [style.background]="activeTab() === 'ats' ? 'var(--accent)' : 'var(--surface2)'"
+              [style.color]="activeTab() === 'ats' ? '#fff' : 'var(--muted)'"
+              style="padding: 7px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span>ATS Candidate Pipeline ({{ applications().length }})</span>
+            </button>
+          </div>
+
+          <!-- View Switcher (Only for Jobs tab) -->
+          <div *ngIf="activeTab() === 'jobs'" style="display: flex; align-items: center; gap: 4px; background: var(--surface2); padding: 3px; border: 1px solid var(--border); border-radius: 10px;">
+            <button
+              (click)="viewMode.set('list')"
+              [style.background]="viewMode() === 'list' ? 'var(--accent)' : 'transparent'"
+              [style.color]="viewMode() === 'list' ? '#fff' : 'var(--muted)'"
+              title="List View"
+              style="padding: 6px 10px; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+              <span>List</span>
+            </button>
+            <button
+              (click)="viewMode.set('grid')"
+              [style.background]="viewMode() === 'grid' ? 'var(--accent)' : 'transparent'"
+              [style.color]="viewMode() === 'grid' ? '#fff' : 'var(--muted)'"
+              title="Grid View"
+              style="padding: 6px 10px; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+              <span>Grid</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Search and Filters Bar (Jobs Tab) -->
+        <div *ngIf="activeTab() === 'jobs'" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <div style="position: relative; flex: 1; min-width: 260px;">
+            <svg width="15" height="15" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+              type="text"
+              [(ngModel)]="searchJobQuery"
+              placeholder="Search by role title, slug, or tech stack (e.g. Rust, Kernel, eBPF)..."
+              style="width: 100%; padding: 8.5px 14px 8.5px 38px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13px; outline: none;" />
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <select
+              [(ngModel)]="selectedLocation"
+              style="padding: 8.5px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13px; outline: none; cursor: pointer;">
+              <option value="ALL">All Locations</option>
+              <option value="Remote">Remote</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="Onsite">Onsite</option>
+            </select>
+
+            <select
+              [(ngModel)]="selectedStatus"
+              style="padding: 8.5px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13px; outline: none; cursor: pointer;">
+              <option value="ALL">All Statuses</option>
+              <option value="Published">Published</option>
+              <option value="Draft">Draft</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================================= -->
+      <!-- TAB 1: ENGINEERING ROLES                                                                  -->
+      <!-- ========================================================================================= -->
+      <div *ngIf="activeTab() === 'jobs'" class="space-y-6">
+
+        <!-- LIST VIEW -->
+        <div *ngIf="viewMode() === 'list'" class="card" style="overflow: hidden;">
+          <div *ngIf="filteredJobs().length === 0" class="empty-state-card">
+            <div class="empty-state-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <div class="empty-state-title">No Engineering Roles Found</div>
+            <p class="empty-state-desc">No published engineering roles match your search filters. Create a new role to begin sourcing candidates.</p>
+          </div>
+
+          <div *ngIf="filteredJobs().length > 0" class="table-responsive">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr style="background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px;">
+                  <th style="padding: 12px 18px;">Role Title & Slug</th>
+                  <th style="padding: 12px 18px;">Type & Location</th>
+                  <th style="padding: 12px 18px;">Experience</th>
+                  <th style="padding: 12px 18px;">Tech Stack</th>
+                  <th style="padding: 12px 18px;">Status</th>
+                  <th style="padding: 12px 18px; text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody style="divide-y: 1px solid var(--border);">
+                <tr *ngFor="let job of filteredJobs()" style="border-bottom: 1px solid var(--border); transition: background 0.15s;" class="hover:bg-slate-800/20">
+                  <td style="padding: 14px 18px;">
+                    <div style="font-weight: 700; color: var(--text); font-size: 14px;">{{ job.title }}</div>
+                    <div style="font-size: 11.5px; color: var(--muted); font-family: monospace;">/{{ job.slug }}</div>
+                  </td>
+                  <td style="padding: 14px 18px;">
+                    <span style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">
+                      {{ formatEmploymentType(job.employmentType) }} • {{ formatLocationType(job.locationType) }}
+                    </span>
+                  </td>
+                  <td style="padding: 14px 18px;">
+                    <span style="font-size: 12px; font-weight: 600; color: var(--text);">
+                      {{ formatExperienceLevel(job.experienceLevel) }}
+                    </span>
+                  </td>
+                  <td style="padding: 14px 18px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 5px; max-width: 280px;">
+                      <span *ngFor="let tag of parseTags(job.techStackTags)" class="tech-tag" style="font-size: 11px; padding: 2px 7px;">
+                        {{ tag }}
+                      </span>
+                    </div>
+                  </td>
+                  <td style="padding: 14px 18px;">
+                    <span [ngClass]="isPublishedStatus(job.status) ? 'badge-live' : (isDraftStatus(job.status) ? 'badge-pending' : 'badge-draft')">
+                      <span class="pulse-dot" [style.background]="isPublishedStatus(job.status) ? '#10b981' : (isDraftStatus(job.status) ? '#f59e0b' : '#71717a')"></span>
+                      <span>{{ formatStatus(job.status) }}</span>
+                    </span>
+                  </td>
+                  <td style="padding: 14px 18px; text-align: right;">
+                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                      <button
+                        (click)="editJob(job)"
+                        class="btn-action-edit"
+                        title="Edit Role">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        (click)="confirmDeleteJob(job)"
+                        class="btn-action-delete"
+                        title="Delete Role">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- GRID VIEW -->
+        <div *ngIf="viewMode() === 'grid'" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 20px;">
+          <div *ngFor="let job of filteredJobs()" class="card" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px;">
+                <span style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">
+                  {{ formatExperienceLevel(job.experienceLevel) }}
+                </span>
+                <span [ngClass]="isPublishedStatus(job.status) ? 'badge-live' : (isDraftStatus(job.status) ? 'badge-pending' : 'badge-draft')">
+                  <span class="pulse-dot" [style.background]="isPublishedStatus(job.status) ? '#10b981' : (isDraftStatus(job.status) ? '#f59e0b' : '#71717a')"></span>
+                  <span>{{ formatStatus(job.status) }}</span>
+                </span>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">{{ job.title }}</h3>
+              <p style="font-size: 11.5px; font-family: monospace; color: var(--muted); margin-bottom: 10px;">
+                {{ formatLocationType(job.locationType) }} • {{ formatEmploymentType(job.employmentType) }}
+              </p>
+              <p style="font-size: 12.5px; color: var(--text2); line-height: 1.4; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                {{ job.description }}
+              </p>
+
+              <!-- Tags -->
+              <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px;">
+                <span *ngFor="let tag of parseTags(job.techStackTags)" class="tech-tag" style="font-size: 11px; padding: 2px 7px;">
+                  {{ tag }}
+                </span>
+              </div>
+            </div>
+
+            <div style="padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+              <button
+                (click)="editJob(job)"
+                class="btn-action-edit">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Edit</span>
+              </button>
+              <button
+                (click)="confirmDeleteJob(job)"
+                class="btn-action-delete"
+                title="Delete Role">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================================= -->
+      <!-- TAB 2: ATS CANDIDATE PIPELINE                                                             -->
+      <!-- ========================================================================================= -->
+      <div *ngIf="activeTab() === 'ats'" class="space-y-6">
+        <!-- Stage Pills Toolbar -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-(--border-color)">
+          <button
+            *ngFor="let stg of stagesList"
+            (click)="selectCandidateStage(stg.key)"
+            class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
+            [class.bg-cyan-600]="candidateStageFilter() === stg.key"
+            [class.text-white]="candidateStageFilter() === stg.key"
+            [class.bg-(--bg-card)]="candidateStageFilter() !== stg.key"
+            [class.text-(--text-muted)]="candidateStageFilter() !== stg.key"
+            [class.border]="candidateStageFilter() !== stg.key"
+            [class.border-(--border-color)]="candidateStageFilter() !== stg.key">
+            <span>{{ stg.label }}</span>
+            <span class="text-[11px] px-1.5 py-0.2 rounded-full"
+              [class.bg-white/20]="candidateStageFilter() === stg.key"
+              [class.bg-(--border-color)/50]="candidateStageFilter() !== stg.key">
+              {{ countByStage(stg.key) }}
+            </span>
+          </button>
+        </div>
+
+        <!-- Candidate Applications Table -->
+        <div class="border border-(--border-color) rounded-xl overflow-hidden bg-(--bg-card)">
+          <div *ngIf="filteredApplications().length === 0" class="empty-state-card">
+            <div class="empty-state-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <div class="empty-state-title">No Candidate Applications</div>
+            <p class="empty-state-desc">There are no candidate applications in this review pipeline stage.</p>
+          </div>
+
+          <div *ngIf="filteredApplications().length > 0" class="table-responsive">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr style="background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px;">
+                  <th style="padding: 12px 18px;">Candidate Name</th>
+                  <th style="padding: 12px 18px;">Applied Role</th>
+                  <th style="padding: 12px 18px;">Stage</th>
+                  <th style="padding: 12px 18px;">Rating</th>
+                  <th style="padding: 12px 18px;">Applied At</th>
+                  <th style="padding: 12px 18px; text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-(--border-color)">
+                <tr *ngFor="let app of filteredApplications()" class="hover:bg-slate-800/10 transition-colors">
+                  <td style="padding: 14px 18px;">
+                    <div style="font-weight: 700; color: var(--text);">
+                      {{ app.candidate?.firstName }} {{ app.candidate?.lastName }}
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--muted); font-family: monospace;">{{ app.candidate?.email }}</div>
+                  </td>
+                  <td style="padding: 14px 18px; font-weight: 600; color: var(--text);">
+                    {{ app.job?.title || 'System Core Engineer' }}
+                  </td>
+                  <td style="padding: 14px 18px;">
+                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full"
+                      [ngClass]="{
+                        'bg-blue-500/10 text-blue-500 border border-blue-500/20': app.status === 'Applied',
+                        'bg-purple-500/10 text-purple-500 border border-purple-500/20': app.status === 'Screening',
+                        'bg-amber-500/10 text-amber-500 border border-amber-500/20': app.status === 'TechnicalInterview',
+                        'bg-cyan-500/10 text-cyan-500 border border-cyan-500/20': app.status === 'ArchitectureReview',
+                        'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20': app.status === 'OfferExtended' || app.status === 'Hired',
+                        'bg-rose-500/10 text-rose-500 border border-rose-500/20': app.status === 'Rejected'
+                      }">
+                      {{ app.status }}
+                    </span>
+                  </td>
+                  <td style="padding: 14px 18px;">
+                    <div class="flex items-center text-amber-400">
+                      <span *ngFor="let star of [1,2,3,4,5]">
+                        <svg class="w-3.5 h-3.5" [class.fill-current]="star <= (app.rating || 0)" [class.stroke-current]="star > (app.rating || 0)" viewBox="0 0 24 24">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                      </span>
+                    </div>
+                  </td>
+                  <td style="padding: 14px 18px; font-size: 11.5px; font-family: monospace; color: var(--muted);">
+                    {{ app.appliedAt | date:'mediumDate' }}
+                  </td>
+                  <td style="padding: 14px 18px; text-align: right;">
+                    <button
+                      (click)="openCandidateDossier(app)"
+                      class="btn-action-view inline-flex">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                      <span>View Dossier</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================================= -->
+      <!-- SLIDE-OVER DRAWER: JOB POSTING EDITOR                                                     -->
+      <!-- ========================================================================================= -->
+      <div *ngIf="isJobDrawerOpen()" class="drawer-backdrop" (click)="closeJobDrawer()">
+        <div class="drawer-panel" style="max-width: 620px;" (click)="$event.stopPropagation()">
+        <!-- Drawer Header -->
+        <div class="drawer-header">
+          <div>
+            <h2 class="drawer-title">
+              {{ editingJobId() ? 'Edit Engineering Role' : 'Create Engineering Role' }}
+            </h2>
+            <p class="drawer-sub">Define high-concurrency role specifications, tech stack tags, and hiring status</p>
+          </div>
+          <button type="button" (click)="closeJobDrawer()" class="drawer-close-btn" title="Close Drawer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Drawer Body Form -->
+        <div class="drawer-body">
+          
+          <!-- Card 1: Role Overview & Identity -->
+          <div class="form-section-card">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <span>Role Identity & Route Slug</span>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <label class="form-label">Role Title</label>
+                <input
+                  type="text"
+                  [(ngModel)]="jobForm.title"
+                  placeholder="e.g. Staff Rust / eBPF Kernel Engineer"
+                  class="form-control" />
+              </div>
+
+              <div>
+                <label class="form-label">URL Route Slug</label>
+                <input
+                  type="text"
+                  [(ngModel)]="jobForm.slug"
+                  placeholder="e.g. staff-rust-ebpf-kernel-engineer"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Employment Logistics -->
+          <div class="form-section-card">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+              <span>Location & Contract Type</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="form-label">Location Type</label>
+                <select [(ngModel)]="jobForm.locationType" class="form-select">
+                  <option value="Remote">Remote</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="Onsite">Onsite</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label">Employment Type</label>
+                <select [(ngModel)]="jobForm.employmentType" class="form-select">
+                  <option value="FullTime">Full Time</option>
+                  <option value="Contract">Contract</option>
+                  <option value="PartTime">Part Time</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Seniority & Status -->
+          <div class="form-section-card">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20v-6M6 20V10M18 20V4"/>
+              </svg>
+              <span>Seniority & Publishing State</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="form-label">Experience Level</label>
+                <select [(ngModel)]="jobForm.experienceLevel" class="form-select">
+                  <option value="Senior">Senior</option>
+                  <option value="Staff">Staff</option>
+                  <option value="Principal">Principal</option>
+                  <option value="Fellow">Fellow</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label">Publishing Status</label>
+                <select [(ngModel)]="jobForm.status" class="form-select">
+                  <option value="Published">Published (Active)</option>
+                  <option value="Draft">Draft (Internal)</option>
+                  <option value="Archived">Archived (Closed)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Tech Stack Tags -->
+          <div class="form-section-card">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+              </svg>
+              <span>Tech Stack Competencies</span>
+            </div>
+            <div>
+              <label class="form-label">Comma-Separated Technology Tags</label>
+              <input
+                type="text"
+                [(ngModel)]="jobTagsInput"
+                placeholder="Rust, eBPF, Linux Kernel, C++20, SIMD, AMD SEV-SNP"
+                class="form-control" />
+              <div *ngIf="jobTagsInput" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
+                <span *ngFor="let tag of parseTags(jobTagsInput)" class="tech-tag" style="font-size: 11.5px; padding: 3px 8px;">
+                  {{ tag }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Role Mission & Specifications -->
+          <div class="form-section-card">
+            <div class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span>Role Mission & Architecture Requirements</span>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <label class="form-label">Role Mission & Responsibilities</label>
+                <textarea
+                  rows="4"
+                  [(ngModel)]="jobForm.description"
+                  placeholder="Describe role responsibilities, mission, and system scale..."
+                  class="form-textarea"></textarea>
+              </div>
+
+              <div>
+                <label class="form-label">Technical Background & System Requirements</label>
+                <textarea
+                  rows="4"
+                  [(ngModel)]="jobForm.requirements"
+                  placeholder="Required low-level engineering experience, concurrency primitives, cryptographic standards..."
+                  class="form-textarea"></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="drawer-footer">
+          <button
+            type="button"
+            (click)="closeJobDrawer()"
+            class="btn-secondary">
+            Cancel
+          </button>
+          <button
+            type="button"
+            (click)="saveJob()"
+            class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+            </svg>
+            <span>{{ editingJobId() ? 'Update Role' : 'Publish Role' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================================================================= -->
+      <!-- SLIDE-OVER DRAWER: CANDIDATE DOSSIER                                                      -->
+      <!-- ========================================================================================= -->
+      <div *ngIf="isDossierOpen()" class="drawer-backdrop" (click)="closeDossier()">
+        <div class="drawer-panel" style="max-width: 680px;" (click)="$event.stopPropagation()" *ngIf="selectedApp() as candApp">
+          <!-- Drawer Header -->
+          <div class="drawer-header">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <h2 class="drawer-title">
+                  {{ candApp.candidate?.firstName }} {{ candApp.candidate?.lastName }}
+                </h2>
+                <span style="font-size: 11px; font-weight: 700; color: var(--accent2); background: var(--info-box-bg); border: 1px solid var(--info-box-border); padding: 2px 8px; border-radius: 6px;">
+                  {{ candApp.status }}
+                </span>
+              </div>
+              <p class="drawer-sub">Candidate for {{ candApp.job?.title || 'System Core Engineer' }}</p>
+            </div>
+            <button type="button" (click)="closeDossier()" class="drawer-close-btn" title="Close Dossier">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Drawer Body -->
+          <div class="drawer-body">
+            <!-- Contact & Socials -->
+            <div class="form-section-card">
+              <div class="form-section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Candidate Dossier & Credentials</span>
+              </div>
+              <div class="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <span class="form-label" style="margin-bottom: 2px;">Email Address</span>
+                  <a href="mailto:{{ candApp.candidate?.email }}" style="color: var(--accent); font-family: monospace;" class="hover:underline">{{ candApp.candidate?.email }}</a>
+                </div>
+                <div>
+                  <span class="form-label" style="margin-bottom: 2px;">Phone Number</span>
+                  <span style="color: var(--text);">{{ candApp.candidate?.phone || 'Not provided' }}</span>
+                </div>
+                <div>
+                  <span class="form-label" style="margin-bottom: 2px;">Curriculum Vitae</span>
+                  <a *ngIf="candApp.resumeFileUrl" [href]="candApp.resumeFileUrl" target="_blank" style="color: var(--accent); font-weight: 600;" class="hover:underline">
+                    Download CV / PDF
+                  </a>
+                  <span *ngIf="!candApp.resumeFileUrl" style="color: var(--muted);">Direct upload</span>
+                </div>
+                <div>
+                  <span class="form-label" style="margin-bottom: 2px;">Profiles</span>
+                  <div class="flex gap-3">
+                    <a *ngIf="candApp.candidate?.linkedinUrl" [href]="candApp.candidate?.linkedinUrl" target="_blank" style="color: var(--accent);" class="hover:underline">LinkedIn</a>
+                    <a *ngIf="candApp.candidate?.githubUrl" [href]="candApp.candidate?.githubUrl" target="_blank" style="color: var(--accent);" class="hover:underline">GitHub</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pipeline Advancement Form -->
+            <div class="form-section-card">
+              <div class="form-section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span>Pipeline Stage & Evaluation Rating</span>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">Pipeline Stage</label>
+                  <select [(ngModel)]="stageUpdateValue" class="form-select">
+                    <option *ngFor="let s of candidateStages" [value]="s">{{ s }}</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Score Rating (1-5)</label>
+                  <select [(ngModel)]="ratingUpdateValue" class="form-select">
+                    <option [ngValue]="1">1 - Unsatisfactory</option>
+                    <option [ngValue]="2">2 - Developing</option>
+                    <option [ngValue]="3">3 - Competent</option>
+                    <option [ngValue]="4">4 - Advanced Kernel Eng</option>
+                    <option [ngValue]="5">5 - Exceptional Attractor Architect</option>
+                  </select>
+                </div>
+              </div>
+              <button
+                (click)="submitStageChange(candApp.id)"
+                class="btn-primary w-full mt-2"
+                style="justify-content: center;">
+                Apply Stage Transition
+              </button>
+            </div>
+
+            <!-- Schedule Interview -->
+            <div class="form-section-card">
+              <div class="form-section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Schedule Technical Interview</span>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="form-label">Interviewer Name</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="interviewForm.interviewerName"
+                    placeholder="e.g. Dr. Vance K. Thorne"
+                    class="form-control" />
+                </div>
+                <div>
+                  <label class="form-label">Stage Name</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="interviewForm.stageName"
+                    placeholder="e.g. Ring 0 Live Coding"
+                    class="form-control" />
+                </div>
+                <div>
+                  <label class="form-label">Date & Time</label>
+                  <input
+                    type="datetime-local"
+                    [(ngModel)]="interviewForm.scheduledAt"
+                    class="form-control" />
+                </div>
+                <div>
+                  <label class="form-label">Meeting Link</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="interviewForm.meetingLink"
+                    placeholder="https://meet.google.com/..."
+                    class="form-control" />
+                </div>
+              </div>
+              <button
+                (click)="submitScheduleInterview(candApp.id)"
+                class="btn-secondary w-full mt-2"
+                style="justify-content: center; color: var(--accent); border-color: rgba(56, 189, 248, 0.3);">
+                Send Calendar Invite & Confirm
+              </button>
+            </div>
+
+            <!-- Notes & Evaluation Log -->
+            <div class="form-section-card">
+              <div class="form-section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>Internal Interview Notes & Thread</span>
+              </div>
+              
+              <!-- Add Note -->
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  [(ngModel)]="newNoteContent"
+                  placeholder="Record technical evaluation feedback..."
+                  class="form-control flex-1" />
+                <button
+                  (click)="submitNote(candApp.id)"
+                  class="btn-secondary"
+                  style="white-space: nowrap;">
+                  Add Note
+                </button>
+              </div>
+
+              <!-- Notes List -->
+              <div class="space-y-2 mt-3">
+                <div *ngFor="let n of candApp.notes" class="p-3 rounded-lg border text-xs" style="background: var(--surface2); border-color: var(--border);">
+                  <div class="flex items-center justify-between mb-1" style="color: var(--muted);">
+                    <span class="font-semibold" style="color: var(--text);">{{ n.authorName }}</span>
+                    <span>{{ n.createdAt | date:'short' }}</span>
+                  </div>
+                  <p style="color: var(--text2);">{{ n.content }}</p>
+                </div>
+                <div *ngIf="!candApp.notes || candApp.notes.length === 0" class="text-xs text-center py-2" style="color: var(--muted);">
+                  No interview notes recorded yet.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drawer Footer -->
+          <div class="drawer-footer">
+            <button
+              type="button"
+              (click)="closeDossier()"
+              class="btn-secondary"
+              style="margin-left: auto;">
+              Close Dossier
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div *ngIf="jobToDelete()" class="modal-backdrop" (click)="jobToDelete.set(null)">
+        <div class="modal-dialog" style="max-width: 440px;" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="color: #f87171;">Delete Engineering Role?</h3>
+              <p class="modal-subtitle">Permanent ATS role de-provisioning</p>
+            </div>
+            <button (click)="jobToDelete.set(null)" class="drawer-close-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 13.5px; color: var(--text2); line-height: 1.5;">
+              Are you sure you want to permanently delete <strong style="color: var(--text);">{{ jobToDelete()?.title }}</strong>? This action will remove all linked applicant data and cannot be reversed.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              (click)="jobToDelete.set(null)"
+              class="btn-secondary">
+              Cancel
+            </button>
+            <button
+              (click)="executeDeleteJob()"
+              class="btn-primary"
+              style="background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); border-color: rgba(225, 29, 72, 0.4);">
+              Delete Role
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,247 @@
+<div class="login-wrapper" [class.light-mode]="!themeService.isDark()">
+      
+      <!-- ══════════════════════════════════════════════════════════════ -->
+      <!-- ATMOSPHERIC BACKGROUND: COORDINATE GRID & ATTRACTOR AXES       -->
+      <!-- ══════════════════════════════════════════════════════════════ -->
+      <div class="ambient-backdrop">
+        <!-- Central Radiant Cyan Bloom -->
+        <div class="cyan-bloom"></div>
+
+        <!-- Ambient Deep Color Clouds -->
+        <div class="color-cloud cloud-1"></div>
+        <div class="color-cloud cloud-2"></div>
+
+        <!-- Mathematical Coordinate Grid Overlay -->
+        <svg class="grid-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="attractor-grid" width="44" height="44" patternUnits="userSpaceOnUse">
+              <path d="M 44 0 L 0 0 0 44" fill="none" class="grid-line" stroke-width="1" />
+              <circle cx="22" cy="22" r="0.9" class="grid-dot" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#attractor-grid)" />
+        </svg>
+
+        <!-- Coordinate Crosshair Axes -->
+        <div class="axis-line y-axis"></div>
+        <div class="axis-line x-axis"></div>
+
+        <!-- Axis Arrows -->
+        <div class="axis-arrow arrow-top">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </div>
+        <div class="axis-arrow arrow-right">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+
+        <!-- Constellation Particles -->
+        <span class="particle p-1"></span>
+        <span class="particle p-2"></span>
+        <span class="particle p-3"></span>
+        <span class="particle p-4"></span>
+        <span class="particle p-5"></span>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════ -->
+      <!-- THEME SWITCHER (Top Right)                                     -->
+      <!-- ══════════════════════════════════════════════════════════════ -->
+      <div class="theme-toggle-container">
+        <button 
+          type="button" 
+          (click)="themeService.toggleTheme()"
+          [title]="themeService.isDark() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+          class="theme-toggle-btn">
+          <!-- Sun Icon (Dark Mode) -->
+          <svg *ngIf="themeService.isDark()" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <!-- Moon Icon (Light Mode) -->
+          <svg *ngIf="!themeService.isDark()" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════ -->
+      <!-- CYBERNETIC GLASSMORHPIC CARD                                   -->
+      <!-- ══════════════════════════════════════════════════════════════ -->
+      <div class="login-card">
+        
+        <!-- Header: Glowing Attractor Geometric Emblem -->
+        <div class="card-header">
+          <div class="emblem-wrapper">
+            <svg class="attractor-emblem" width="68" height="68" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Outer Hexagon -->
+              <polygon points="50,4 90,27 90,73 50,96 10,73 10,27" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(6, 182, 212, 0.08)" />
+              <!-- Rotated Spiral Layers -->
+              <polygon points="50,13 82,31 82,69 50,87 18,69 18,31" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" transform="rotate(14 50 50)" />
+              <polygon points="50,21 75,35 75,65 50,79 25,65 25,35" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.75" stroke-linecap="round" stroke-linejoin="round" transform="rotate(28 50 50)" />
+              <polygon points="50,29 68,39 68,61 50,71 32,61 32,39" stroke="#0284c7" stroke-width="1.3" stroke-opacity="0.65" stroke-linecap="round" stroke-linejoin="round" transform="rotate(42 50 50)" />
+              <!-- Center Singularity Vortex -->
+              <circle cx="50" cy="50" r="9" stroke="#38bdf8" stroke-width="2.2" fill="rgba(56, 189, 248, 0.25)" />
+              <circle cx="50" cy="50" r="3.2" fill="#ffffff" />
+            </svg>
+          </div>
+
+          <h1 class="card-title">6174 ATTRACTOR</h1>
+          
+          <div class="status-badge">
+            <span class="pulse-indicator"></span>
+            <span>CONTROL PLANE AUTHENTICATION</span>
+          </div>
+        </div>
+
+        <!-- Error Alert Banner -->
+        <div *ngIf="errorMessage()" class="error-banner">
+          <svg class="error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <div class="error-text">{{ errorMessage() }}</div>
+        </div>
+
+        <!-- Authentication Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-body">
+          
+          <!-- Field: Admin Email -->
+          <div class="field-group">
+            <label class="field-label" for="emailInput">Admin Email</label>
+            
+            <div class="input-box" [class.input-focused]="isEmailFocused">
+              <!-- Left Icon Slot (In-Flow Flex Item) -->
+              <div class="icon-slot">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </div>
+
+              <!-- Pure Text Input -->
+              <input 
+                id="emailInput"
+                type="email" 
+                formControlName="email" 
+                placeholder="admin@fourdigitcore.com"
+                class="native-input"
+                (focus)="isEmailFocused = true"
+                (blur)="isEmailFocused = false"
+                autocomplete="email"
+              />
+            </div>
+
+            <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']" class="validation-msg">
+              Email is required.
+            </div>
+            <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']" class="validation-msg">
+              Enter a valid email address.
+            </div>
+          </div>
+
+          <!-- Field: Password -->
+          <div class="field-group">
+            <label class="field-label" for="passwordInput">Password</label>
+            
+            <div class="input-box" [class.input-focused]="isPasswordFocused">
+              <!-- Left Lock Icon Slot (In-Flow Flex Item) -->
+              <div class="icon-slot">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </div>
+
+              <!-- Pure Text Input -->
+              <input 
+                id="passwordInput"
+                [type]="showPassword() ? 'text' : 'password'" 
+                formControlName="password" 
+                placeholder="••••••••••••"
+                class="native-input"
+                (focus)="isPasswordFocused = true"
+                (blur)="isPasswordFocused = false"
+                autocomplete="current-password"
+              />
+
+              <!-- Right Toggle Eye Button (In-Flow Flex Item) -->
+              <button 
+                type="button" 
+                (click)="showPassword.set(!showPassword())"
+                tabindex="-1"
+                class="action-btn"
+                [title]="showPassword() ? 'Hide Password' : 'Show Password'">
+                <!-- Eye Open -->
+                <svg *ngIf="!showPassword()" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                <!-- Eye Closed -->
+                <svg *ngIf="showPassword()" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']" class="validation-msg">
+              Password is required.
+            </div>
+          </div>
+
+          <!-- Quick Autofill Trigger -->
+          <div class="helper-row">
+            <span class="helper-label">Operator Authority:</span>
+            <button 
+              type="button" 
+              (click)="autofillDefault()"
+              class="autofill-btn">
+              ⚡ Fill SuperAdmin Key
+            </button>
+          </div>
+
+          <!-- Radiant Cyan CTA Button -->
+          <button 
+            type="submit" 
+            [disabled]="isLoading() || loginForm.invalid"
+            class="submit-btn">
+            
+            <ng-container *ngIf="!isLoading()">
+              <span>Sign In to Control Plane</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </ng-container>
+
+            <ng-container *ngIf="isLoading()">
+              <svg class="spinner-svg" width="18" height="18" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" opacity="0.25" />
+                <path d="M12 2 A 10 10 0 0 1 22 12" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" />
+              </svg>
+              <span>Verifying Kernel Enclave...</span>
+            </ng-container>
+          </button>
+        </form>
+
+        <!-- Subsystem Security Footer -->
+        <div class="card-footer">
+          <span>SHA-256 SECURED</span>
+          <span class="footer-dot">•</span>
+          <span class="footer-highlight">SUB-MILLISECOND KERNEL</span>
+        </div>
+
+      </div>
+
+    </div>

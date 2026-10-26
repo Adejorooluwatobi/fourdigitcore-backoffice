@@ -1,0 +1,206 @@
+<div class="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden select-none"
+      [style.background]="themeService.isDark() ? '#030712' : '#f8fafc'">
+      
+      <!-- Ambient Background -->
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
+          [style.background]="themeService.isDark() 
+            ? 'radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(14, 165, 233, 0.05) 45%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(2, 132, 199, 0.08) 0%, rgba(56, 189, 248, 0.03) 45%, transparent 70%)'">
+        </div>
+      </div>
+
+      <!-- Card -->
+      <div class="w-full max-w-[480px] rounded-3xl p-8 sm:p-10 relative z-10 transition-all duration-300"
+        [style.background]="themeService.isDark() ? 'rgba(11, 17, 32, 0.82)' : 'rgba(255, 255, 255, 0.92)'"
+        [style.border]="themeService.isDark() ? '1px solid rgba(56, 189, 248, 0.28)' : '1px solid rgba(2, 132, 199, 0.20)'"
+        [style.backdrop-filter]="'blur(28px)'"
+        [style.box-shadow]="themeService.isDark() 
+          ? '0 30px 70px -15px rgba(0, 0, 0, 0.85), 0 0 45px rgba(6, 182, 212, 0.18)' 
+          : '0 25px 60px -15px rgba(15, 23, 42, 0.12), 0 0 35px rgba(2, 132, 199, 0.10)'">
+        
+        <!-- Header -->
+        <div class="text-center mb-6 flex flex-col items-center">
+          <div class="relative mb-3 flex items-center justify-center">
+            <img [src]="themeService.logoSrc()" alt="6174 Attractor Core" class="h-14 w-auto object-contain filter drop-shadow-[0_0_12px_rgba(6,182,212,0.35)]" />
+          </div>
+          <h2 class="text-2xl font-black tracking-tight" [style.color]="themeService.isDark() ? '#ffffff' : '#0f172a'">
+            Administrative Activation
+          </h2>
+          <div class="inline-block mt-2 px-3 py-1 rounded-full text-[10.5px] font-mono tracking-wider uppercase font-bold border"
+            [style.background]="themeService.isDark() ? 'rgba(56, 189, 248, 0.1)' : 'rgba(2, 132, 199, 0.08)'"
+            [style.border-color]="themeService.isDark() ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.20)'"
+            [style.color]="themeService.isDark() ? '#38bdf8' : '#0284c7'">
+            IDENTITY & ACCESS SUBSYSTEM
+          </div>
+        </div>
+
+        <!-- STATE 1: LOADING -->
+        @if (state() === 'loading') {
+          <div class="py-12 flex flex-col items-center justify-center text-center gap-4">
+            <svg class="w-10 h-10 animate-spin text-cyan-400" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <div class="text-xs font-mono tracking-wider font-bold" [style.color]="themeService.isDark() ? '#38bdf8' : '#0284c7'">
+              VALIDATING CRYPTOGRAPHIC TOKEN...
+            </div>
+            <p class="text-xs text-slate-400">Verifying authority against FourDigitCore security subsystem</p>
+          </div>
+        }
+
+        <!-- STATE 2: ERROR -->
+        @if (state() === 'error') {
+          <div class="py-6 flex flex-col items-center text-center gap-3">
+            <div class="w-14 h-14 rounded-full flex items-center justify-center mb-2 bg-rose-500/10 border border-rose-500/30 text-rose-500">
+              <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold" [style.color]="themeService.isDark() ? '#ffffff' : '#0f172a'">Invitation Unavailable</h3>
+            <p class="text-xs max-w-sm leading-relaxed text-slate-400">
+              {{ errorMessage() || 'This invitation has expired, has been revoked, or is invalid.' }}
+            </p>
+            <a routerLink="/login" class="mt-4 w-full py-2.5 px-4 rounded-xl text-xs font-semibold border border-slate-700 bg-slate-800 text-white flex items-center justify-center gap-2 hover:bg-slate-700 transition-colors">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span>Return to Login</span>
+            </a>
+          </div>
+        }
+
+        <!-- STATE 3: FORM -->
+        @if (state() === 'valid') {
+          <!-- Inviter Context -->
+          <div class="p-3.5 rounded-xl border mb-5 text-xs leading-relaxed"
+            [style.background]="themeService.isDark() ? 'rgba(15, 23, 42, 0.6)' : 'rgba(241, 245, 249, 0.8)'"
+            [style.border-color]="themeService.isDark() ? 'rgba(56, 189, 248, 0.2)' : 'rgba(15, 23, 42, 0.1)'">
+            Invited by <strong [style.color]="themeService.isDark() ? '#ffffff' : '#0f172a'">{{ details()?.invitedByAdminName || 'SuperAdmin' }}</strong> to join the 6174 Attractor Control Plane as
+            <span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono font-bold"
+              [style.background]="themeService.isDark() ? 'rgba(56, 189, 248, 0.15)' : 'rgba(2, 132, 199, 0.1)'"
+              [style.color]="themeService.isDark() ? '#38bdf8' : '#0284c7'">
+              {{ details()?.assignedRole || 'SystemAdmin' }}
+            </span>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+            <!-- Email (Immutable) -->
+            <div>
+              <div class="flex justify-between items-center text-xs font-semibold mb-1"
+                [style.color]="themeService.isDark() ? '#cbd5e1' : '#334155'">
+                <span>Admin Email</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded border border-slate-700 opacity-60">IMMUTABLE</span>
+              </div>
+              <input 
+                type="email" 
+                [value]="details()?.email" 
+                readonly 
+                class="w-full px-4 py-2.5 rounded-xl text-xs font-mono outline-none cursor-not-allowed opacity-75"
+                [style.background]="themeService.isDark() ? 'rgba(3, 7, 18, 0.65)' : '#f1f5f9'"
+                [style.border]="themeService.isDark() ? '1.5px solid #1e293b' : '1.5px solid #cbd5e1'"
+                [style.color]="themeService.isDark() ? '#94a3b8' : '#64748b'"
+              />
+            </div>
+
+            <!-- Full Name -->
+            <div>
+              <label class="block text-xs font-semibold mb-1"
+                [style.color]="themeService.isDark() ? '#cbd5e1' : '#334155'">Full Name</label>
+              <input 
+                type="text" 
+                formControlName="fullName"
+                class="w-full px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
+                [style.background]="themeService.isDark() ? 'rgba(3, 7, 18, 0.65)' : '#ffffff'"
+                [style.border]="themeService.isDark() ? '1.5px solid #1e293b' : '1.5px solid #cbd5e1'"
+                [style.color]="themeService.isDark() ? '#ffffff' : '#0f172a'"
+              />
+            </div>
+
+            <!-- Password -->
+            <div>
+              <label class="block text-xs font-semibold mb-1"
+                [style.color]="themeService.isDark() ? '#cbd5e1' : '#334155'">Create Password</label>
+              <input 
+                type="password" 
+                formControlName="password"
+                placeholder="••••••••••••"
+                class="w-full px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
+                [style.background]="themeService.isDark() ? 'rgba(3, 7, 18, 0.65)' : '#ffffff'"
+                [style.border]="themeService.isDark() ? '1.5px solid #1e293b' : '1.5px solid #cbd5e1'"
+                [style.color]="themeService.isDark() ? '#ffffff' : '#0f172a'"
+              />
+              
+              <!-- Real-time Rules -->
+              <div class="mt-2.5 p-3 rounded-xl border grid grid-cols-2 gap-1.5 text-[11px]"
+                [style.background]="themeService.isDark() ? 'rgba(15, 23, 42, 0.6)' : 'rgba(241, 245, 249, 0.8)'"
+                [style.border-color]="themeService.isDark() ? 'rgba(56, 189, 248, 0.15)' : 'rgba(15, 23, 42, 0.1)'">
+                <div [class.text-emerald-400]="hasLength()" class="flex items-center gap-1.5 text-slate-400">
+                  <span>{{ hasLength() ? '✓' : '○' }}</span> 8+ Characters
+                </div>
+                <div [class.text-emerald-400]="hasUpper()" class="flex items-center gap-1.5 text-slate-400">
+                  <span>{{ hasUpper() ? '✓' : '○' }}</span> 1 Uppercase (A-Z)
+                </div>
+                <div [class.text-emerald-400]="hasLower()" class="flex items-center gap-1.5 text-slate-400">
+                  <span>{{ hasLower() ? '✓' : '○' }}</span> 1 Lowercase (a-z)
+                </div>
+                <div [class.text-emerald-400]="hasDigit()" class="flex items-center gap-1.5 text-slate-400">
+                  <span>{{ hasDigit() ? '✓' : '○' }}</span> 1 Number (0-9)
+                </div>
+                <div [class.text-emerald-400]="hasSymbol()" class="col-span-2 flex items-center gap-1.5 text-slate-400">
+                  <span>{{ hasSymbol() ? '✓' : '○' }}</span> 1 Special Symbol (!&#64;#$%^&*)
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+              <label class="block text-xs font-semibold mb-1"
+                [style.color]="themeService.isDark() ? '#cbd5e1' : '#334155'">Confirm Password</label>
+              <input 
+                type="password" 
+                formControlName="confirmPassword"
+                placeholder="••••••••••••"
+                class="w-full px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
+                [style.background]="themeService.isDark() ? 'rgba(3, 7, 18, 0.65)' : '#ffffff'"
+                [style.border]="themeService.isDark() ? '1.5px solid #1e293b' : '1.5px solid #cbd5e1'"
+                [style.color]="themeService.isDark() ? '#ffffff' : '#0f172a'"
+              />
+              @if (form.get('confirmPassword')?.value && !passwordsMatch()) {
+                <span class="text-[11px] text-rose-400 mt-1 block">Passwords do not match.</span>
+              }
+              @if (form.get('confirmPassword')?.value && passwordsMatch()) {
+                <span class="text-[11px] text-emerald-400 mt-1 block">✓ Passwords match.</span>
+              }
+            </div>
+
+            <!-- Submit -->
+            <button 
+              type="submit" 
+              [disabled]="isSubmitting() || !isFormValid()"
+              class="w-full py-3 mt-3 rounded-xl font-bold text-sm tracking-wide transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99]"
+              [style.background]="themeService.isDark() 
+                ? 'linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%)' 
+                : 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'"
+              [style.color]="themeService.isDark() ? '#030712' : '#ffffff'"
+              [style.box-shadow]="themeService.isDark() 
+                ? '0 0 25px rgba(6, 182, 212, 0.45), 0 4px 15px rgba(0, 0, 0, 0.4)' 
+                : '0 8px 20px rgba(2, 132, 199, 0.35)'">
+              @if (!isSubmitting()) {
+                <span>Activate Account & Launch Portal</span>
+                <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              } @else {
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Activating Credentials...</span>
+              }
+            </button>
+          </form>
+        }
+
+      </div>
+    </div>
